@@ -50,7 +50,6 @@ void setup() {
   pinMode(K,OUTPUT);
   pinMode(C,OUTPUT);
   digitalWrite(C,HIGH);
-  // MOTOR.Moutput(4,-175);
   digitalWrite(K,LOW);
   if(goal_color == 0){
     cam_front.color = 0;  //青が0 黄色が1
@@ -80,7 +79,7 @@ void loop() {
   Serial.println();
 
   if(ball.ball_get == 1){
-    MOTOR.Moutput(4,220);
+    MOTOR.Moutput(4,200);
     delay(2000);
     kick();
   }
