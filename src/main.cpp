@@ -13,6 +13,10 @@ LINE line;
 AC ac;
 motor_attack MOTOR;
 
+//======================================================きっく======================================================//
+void kick();
+const int C = 32;
+const int K = 31;
 //======================================================neopiku======================================================//
 #define DELAYVAL 500
 #define PIN        30 
@@ -43,6 +47,11 @@ void setup() {
   pixels.begin();
   pixels.clear();
   pinMode(LED,OUTPUT);
+  pinMode(K,OUTPUT);
+  pinMode(C,OUTPUT);
+  digitalWrite(C,HIGH);
+  // MOTOR.Moutput(4,-175);
+  digitalWrite(K,LOW);
   if(goal_color == 0){
     cam_front.color = 0;  //青が0 黄色が1
     cam_back.color = 1;  //青が0 黄色が1
@@ -70,6 +79,12 @@ void loop() {
   // Serial.print(" | ");
   Serial.println();
 
+  if(ball.ball_get == 1){
+    MOTOR.Moutput(4,220);
+    delay(2000);
+    kick();
+  }
+
   if(toogle_f != digitalRead(toogle_P)){
     pixels.clear();
     MOTOR.motor_0();
@@ -90,6 +105,22 @@ void Switch(){
   delay(100);
   while(digitalRead(toogle_P) == toogle_f);
   toogle_f = digitalRead(toogle_P);
+}
+
+
+
+void kick(){
+  // esc.writeMicroseconds(1000);
+  digitalWrite(C,LOW);
+  delay(10);
+  digitalWrite(K,HIGH);
+  digitalWrite(LED,HIGH);
+  delay(10);
+  digitalWrite(K,LOW);
+  digitalWrite(LED,LOW);
+  delay(10);
+  digitalWrite(C,HIGH);
+  // MOTOR.Moutput(4,-200);
 }
 
 

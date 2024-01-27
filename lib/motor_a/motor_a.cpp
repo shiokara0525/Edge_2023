@@ -110,7 +110,7 @@ void motor_attack::motor_ac(float ac_val){
 
 
 void motor_attack::motor_0(){  //モーターの値を0にする関数
-  for(int i = 0; i < 4; i++){
+  for(int i = 0; i < 5; i++){
     Moutput(i,0);
   }
 }
