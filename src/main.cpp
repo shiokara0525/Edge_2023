@@ -40,6 +40,9 @@ void setup() {
 }
 
 void loop() {
+  line.getLINE_Vec();
+  ball.getBallposition();
+  ac.getAC_val();
   // ball.print();
   // Serial.print(" | ");
   // line.print();
@@ -137,8 +140,12 @@ void serialEvent4(){
       }
     }
   }
-  else{
+  for(int i = 0; i < 5; i++){
+    Serial.print(reBuf[i]);
+    Serial.print(" ");
   }
+  // Serial.println();
+  // Serial.print("sawa");
 }
 
 
