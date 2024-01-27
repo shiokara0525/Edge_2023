@@ -11,7 +11,7 @@
 BALL ball;
 LINE line;
 AC ac;
-motor_attack motor;
+motor_attack MOTOR;
 
 //======================================================neopiku======================================================//
 #define DELAYVAL 500
@@ -40,6 +40,9 @@ void setup() {
   ac.setup();
   cam_front.begin();
   cam_back.begin();
+  pixels.begin();
+  pixels.clear();
+  pinMode(LED,OUTPUT);
   if(goal_color == 0){
     cam_front.color = 0;  //青が0 黄色が1
     cam_back.color = 1;  //青が0 黄色が1
@@ -48,6 +51,7 @@ void setup() {
     cam_front.color = 1;  //青が0 黄色が1
     cam_back.color = 0;  //青が0 黄色が1
   }
+  Switch();
 }
 
 void loop() {
@@ -65,6 +69,12 @@ void loop() {
   // cam_back.print();
   // Serial.print(" | ");
   Serial.println();
+
+  if(toogle_f != digitalRead(toogle_P)){
+    pixels.clear();
+    MOTOR.motor_0();
+    Switch();
+  }
 }
 
 
