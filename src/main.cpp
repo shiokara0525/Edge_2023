@@ -6,21 +6,33 @@
 #include<MA.h>
 #include<timer.h>
 #include<Cam.h>
+#include<Adafruit_NeoPixel.h>
 
 BALL ball;
 LINE line;
 AC ac;
 motor_attack motor;
 
+//======================================================neopiku======================================================//
+#define DELAYVAL 500
+#define PIN        30 
+#define NUMPIXELS 16
+
+int Neo[16] = {12,11,10,9,8,7,6,5,4,3,2,1,0,15,14,13};
+int Neo_p = 999;
+
+Adafruit_NeoPixel pixels(DELAYVAL, PIN, NEO_GRB + NEO_KHZ800);
+//======================================================カメラ======================================================//
 int goal_color = 0;  //青が0 黄色が1
 Cam cam_front(4);
 Cam cam_back(3);
-
+//======================================================スタートスイッチ======================================================//
 int LED = 13;
 int toogle_f;
 int toogle_P = 27;
 void Switch();
 
+//======================================================関数たち======================================================/
 
 void setup() {
   Serial.begin(9600);
@@ -37,23 +49,19 @@ void setup() {
     cam_front.color = 1;  //青が0 黄色が1
     cam_back.color = 0;  //青が0 黄色が1
   }
+  pixels.begin();
 }
 
 void loop() {
-  line.getLINE_Vec();
   ball.getBallposition();
-  ac.getAC_val();
-  // ball.print();
-  // Serial.print(" | ");
-  // line.print();
-  // Serial.print(" | ");
-  // ac.print();
-  // Serial.print(" | ");
-  // cam_front.print();
-  // Serial.print(" | ");
-  // cam_back.print();
-  // Serial.print(" | ");
-  Serial.println();
+  pixels.clear();
+  for(int i = 0; i < 16; i++){
+    pixels.setPixelColor(i,0xFF00CC);
+    pixels.show();
+    delay(10);
+    pixels.clear();
+  }
+  // delay(10);
 }
 
 
@@ -141,8 +149,8 @@ void serialEvent4(){
     }
   }
   for(int i = 0; i < 5; i++){
-    Serial.print(reBuf[i]);
-    Serial.print(" ");
+    // Serial.print(reBuf[i]);
+    // Serial.print(" ");
   }
   // Serial.println();
   // Serial.print("sawa");
