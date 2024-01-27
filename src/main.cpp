@@ -57,7 +57,8 @@ void setup() {
 void loop() {
   line.getLINE_Vec();
   ball.getBallposition();
-  ac.getAC_val();
+  double AC_val = ac.getAC_val();
+
   // ball.print();
   // Serial.print(" | ");
   // line.print();
@@ -70,6 +71,8 @@ void loop() {
   // Serial.print(" | ");
   Serial.println();
 
+  MOTOR.motor_ac(AC_val);
+  
   if(toogle_f != digitalRead(toogle_P)){
     pixels.clear();
     MOTOR.motor_0();
