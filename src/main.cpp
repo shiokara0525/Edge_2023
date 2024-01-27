@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include<Adafruit_NeoPixel.h>
 #include<ac.h>
 #include<ball.h>
 #include<line.h>
@@ -12,15 +13,25 @@ LINE line;
 AC ac;
 motor_attack motor;
 
+//======================================================neopiku======================================================//
+#define DELAYVAL 500
+#define PIN        30 
+#define NUMPIXELS 16
+
+int Neo[16] = {12,11,10,9,8,7,6,5,4,3,2,1,0,15,14,13};
+int Neo_p = 999;
+
+Adafruit_NeoPixel pixels(DELAYVAL, PIN, NEO_GRB + NEO_KHZ800);
+//======================================================カメラ======================================================//
 int goal_color = 0;  //青が0 黄色が1
 Cam cam_front(4);
 Cam cam_back(3);
-
+//======================================================スタートスイッチ======================================================//
 int LED = 13;
 int toogle_f;
 int toogle_P = 27;
 void Switch();
-
+//======================================================関数たち======================================================/
 
 void setup() {
   Serial.begin(9600);
