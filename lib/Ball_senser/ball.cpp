@@ -42,6 +42,7 @@ int BALL::getBallposition(){
     if(150 < abs(y)){
         y = (y < 0 ? -150 : 150);
     }
+    ball_get = get_;
     ang = degrees(atan2(y,x));
     far = sqrt(x_pos*x_pos + y_pos*y_pos);
     dx = (far - far_old);
@@ -51,6 +52,12 @@ int BALL::getBallposition(){
     far_old = far;
     return flag;
 }
+
+
+void BALL::get_resister(int n){
+    get_ = n;
+}
+
 
 void BALL::print(){
     Serial.print(" ang : ");
