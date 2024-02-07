@@ -36,9 +36,9 @@ int LINE::getLINE_Vec() { //ラインのベクトル(距離,角度)を取得す�
     }
   }
   for(int i = 0; i < 24; i++){
-    // Serial.print(" ");
-    // Serial.print(data_on[i]);
-    if(i == 19){
+    Serial.print(" ");
+    Serial.print(data_on[i]);
+    if(i == 3 ||(17 <= i && i <= 23)){
       continue;
     }
     if(flag == 0){

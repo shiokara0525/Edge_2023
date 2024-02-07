@@ -12,7 +12,14 @@ BALL ball;
 LINE line;
 AC ac;
 motor_attack MOTOR;
+timer Timer;
 
+int A = 0;
+int B = 999;
+//======================================================きっく======================================================//
+void kick();
+const int C = 32;
+const int K = 31;
 //======================================================neopiku======================================================//
 #define DELAYVAL 500
 #define PIN        30 
@@ -31,6 +38,8 @@ int LED = 13;
 int toogle_f;
 int toogle_P = 27;
 void Switch();
+//======================================================ライン======================================================//
+int Line_flag = 0;
 //======================================================関数たち======================================================/
 
 void setup() {
@@ -43,6 +52,10 @@ void setup() {
   pixels.begin();
   pixels.clear();
   pinMode(LED,OUTPUT);
+  pinMode(K,OUTPUT);
+  pinMode(C,OUTPUT);
+  digitalWrite(C,HIGH);
+  digitalWrite(K,LOW);
   if(goal_color == 0){
     cam_front.color = 0;  //青が0 黄色が1
     cam_back.color = 1;  //青が0 黄色が1
@@ -51,7 +64,7 @@ void setup() {
     cam_front.color = 1;  //青が0 黄色が1
     cam_back.color = 0;  //青が0 黄色が1
   }
-  // Switch();
+  Switch();
 }
 
 void loop() {
@@ -65,15 +78,62 @@ void loop() {
   ball.getBallposition();
   float AC_val = ac.getAC_val();
   angle go_ang(ball.ang,true);
-  int Line_flag = line.getLINE_Vec();
+  int line_flag = line.getLINE_Vec();
+  if(line_flag == 1){
+    A = 20;
+  }
+  else{
+    if(ball.ball_get == 1){
+      A = 11;
+    }
+    else{
+      A = 10;
+    }
+  }
 
-  MOTOR.moveMotor_0(go_ang,200,AC_val,0);
+
+  if(A == 10){
+    if(A != B){
+      B = A;
+    }
+  }
+
+  if(A == 11){
+    if(A != B){
+      B = A;
+      Timer.reset();
+    }
+    if(Timer.read_ms() < 1000){
+      go_ang = 0;
+    }
+    else{
+      go_ang = ball.ang;
+      Timer.reset();
+      kick();
+    }
+    go_ang = 0;
+  }
+
+  if(A == 20){  //ラインから逃げるやつ
+    angle line_ang(line.ang,true);
+    if(A != B){
+      B = A;
+      Line_flag = line.switchLineflag(line_ang);
+    }
+    go_ang = line.decideGoang(line_ang,Line_flag);
+  }
+
+  // MOTOR.moveMotor_0(go_ang,200,AC_val,0);
+  Serial.print(" | ");
   Serial.print(go_ang.degree);
-
-  // if(toogle_f != digitalRead(toogle_P)){
-  //   MOTOR.motor_0();
-  //   Switch();
-  // }
+  // Serial.print(" | ");
+  // ball.print();
+  Serial.print(" | ");
+  line.print();
+  if(toogle_f != digitalRead(toogle_P)){
+    MOTOR.motor_0();
+    Switch();
+  }
   Serial.println();
 }
 
@@ -90,6 +150,22 @@ void Switch(){
   delay(100);
   while(digitalRead(toogle_P) == toogle_f);
   toogle_f = digitalRead(toogle_P);
+}
+
+
+
+void kick(){
+  // esc.writeMicroseconds(1000);
+  digitalWrite(C,LOW);
+  delay(10);
+  digitalWrite(K,HIGH);
+  digitalWrite(LED,HIGH);
+  delay(10);
+  digitalWrite(K,LOW);
+  digitalWrite(LED,LOW);
+  delay(10);
+  digitalWrite(C,HIGH);
+  // MOTOR.Moutput(4,-200);
 }
 
 
