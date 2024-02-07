@@ -51,19 +51,29 @@ void setup() {
     cam_front.color = 1;  //青が0 黄色が1
     cam_back.color = 0;  //青が0 黄色が1
   }
-  Switch();
+  // Switch();
 }
 
 void loop() {
-  for(int i = 0; i < 4; i++){
-    MOTOR.Moutput(i,200);
-    delay(500);
-    MOTOR.motor_0();
-  }
-  if(toogle_f != digitalRead(toogle_P)){
-    MOTOR.motor_0();
-    Switch();
-  }
+  // for(int i = 0; i < 5; i++){
+  //   MOTOR.Moutput(i,200);
+  //   delay(500);
+  //   Serial.print(i);
+  //   MOTOR.Moutput(i,0);
+  // }
+
+  ball.getBallposition();
+  float AC_val = ac.getAC_val();
+  angle go_ang(ball.ang,true);
+  int Line_flag = line.getLINE_Vec();
+
+  MOTOR.moveMotor_0(go_ang,200,AC_val,0);
+  Serial.print(go_ang.degree);
+
+  // if(toogle_f != digitalRead(toogle_P)){
+  //   MOTOR.motor_0();
+  //   Switch();
+  // }
   Serial.println();
 }
 
