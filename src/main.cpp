@@ -156,6 +156,19 @@ void loop() {
     go_ang = line.decideGoang(line_ang,Line_flag);
   }
 
+  if(line.side_flag == 1){
+    go_ang = -90;
+  }
+  else if(line.side_flag == 2){
+    go_ang = 90;
+  }
+  else if(line.side_flag == 3){
+    go_ang = 180;
+  }
+  else if(line.side_flag == 4){
+    go_ang = 0;
+  }
+
   if(AC_flag == 0){
     AC_val = ac.getAC_val();
   }
@@ -167,7 +180,7 @@ void loop() {
     kick();
   }
 
-  MOTOR.moveMotor_0(go_ang,max_val,AC_val,0);
+  // MOTOR.moveMotor_0(go_ang,max_val,AC_val,0);
   // Serial.print(" | ");
   // Serial.print(go_ang.degree);
   // Serial.print(" | ");

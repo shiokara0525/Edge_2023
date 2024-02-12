@@ -64,12 +64,12 @@ void BALL::print(){
     Serial.print(ang);
     Serial.print(" far : ");
     Serial.print(far_);
-    Serial.print(" x : ");
-    Serial.print(x_pos);
-    Serial.print(" y : ");
-    Serial.print(y_pos);
-    Serial.print(" dx : ");
-    Serial.print(dx);
+    // Serial.print(" x : ");
+    // Serial.print(x_pos);
+    // Serial.print(" y : ");
+    // Serial.print(y_pos);
+    // Serial.print(" dx : ");
+    // Serial.print(dx);
     Serial.print(" catch : ");
     Serial.print(ball_get);
     Serial.print(" flag : ");
