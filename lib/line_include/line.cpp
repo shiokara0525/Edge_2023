@@ -6,7 +6,7 @@ LINE::LINE(){
 }
 
 void LINE::begin(){
-  Serial6.begin(57600);
+  Serial6.begin(115200);
   for(int i = 0; i < 24; i++){
     ele_Y[i] = sin(radians(15 * i));
     ele_X[i] = cos(radians(15 * i));
@@ -38,7 +38,7 @@ int LINE::getLINE_Vec() { //ラインのベクトル(距離,角度)を取得す�
   for(int i = 0; i < 24; i++){
     Serial.print(" ");
     Serial.print(data_on[i]);
-    if(i == 3 ||(17 <= i && i <= 23)){
+    if(i == 17){
       continue;
     }
     if(flag == 0){

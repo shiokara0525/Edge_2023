@@ -16,6 +16,11 @@ timer Timer;
 
 int A = 0;
 int B = 999;
+const int ang_180 = 230;
+const int ang_90 = 160;
+const int ang_30 = 70;
+const int ang_10 = 10;
+const int far_th = 130;
 //======================================================きっく======================================================//
 void kick();
 const int C = 32;
@@ -68,13 +73,6 @@ void setup() {
 }
 
 void loop() {
-  // for(int i = 0; i < 5; i++){
-  //   MOTOR.Moutput(i,200);
-  //   delay(500);
-  //   Serial.print(i);
-  //   MOTOR.Moutput(i,0);
-  // }
-
   ball.getBallposition();
   float AC_val = ac.getAC_val();
   angle go_ang(ball.ang,true);
@@ -92,11 +90,32 @@ void loop() {
   }
 
 
-  if(A == 10){
+
+  if(A == 10){  //回り込むやつ
     if(A != B){
       B = A;
     }
+    int ang_180_ = ang_180;
+    int ang_90_ = ang_90;
+    int ang_30_ = ang_30;
+    int ang_10_ = ang_10;
+
+    if(abs(ball.ang) < 10){
+      go_ang = ang_10_ / 10.0 * ball.ang;
+    }
+    else if(abs(ball.ang) < 30){
+      go_ang = ((ang_30_ - ang_10_) / 20.0 * (abs(ball.ang) - 10) + ang_10_);
+    }
+    else if(abs(ball.ang) < 90){
+      go_ang = ((ang_90_ - ang_30_) / 60.0 * (abs(ball.ang) - 30) + ang_30_);
+    }
+    else{
+      go_ang = ((ang_180_ - ang_90) / 90.0 * (abs(ball.ang) - 90) + ang_90_);
+    }
+
+    go_ang = go_ang.degree * (ball.ang < 0 ? -1 : 1);
   }
+
 
   if(A == 11){
     if(A != B){
@@ -123,13 +142,26 @@ void loop() {
     go_ang = line.decideGoang(line_ang,Line_flag);
   }
 
-  // MOTOR.moveMotor_0(go_ang,200,AC_val,0);
-  Serial.print(" | ");
-  Serial.print(go_ang.degree);
+  if(line.side_flag == 1){
+    go_ang = 90;
+  }
+  else if(line.side_flag == 2){
+    go_ang = -90;
+  }
+  else if(line.side_flag == 3){
+    go_ang = 180;
+  }
+  else if(line.side_flag == 4){
+    go_ang = 0;
+  }
+
+  MOTOR.moveMotor_0(go_ang,160,AC_val,0);
+  // Serial.print(" | ");
+  // Serial.print(go_ang.degree);
   // Serial.print(" | ");
   // ball.print();
-  Serial.print(" | ");
-  line.print();
+  // Serial.print(" | ");
+  // line.print();
   if(toogle_f != digitalRead(toogle_P)){
     MOTOR.motor_0();
     Switch();
