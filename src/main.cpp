@@ -76,10 +76,13 @@ void setup() {
 
 void loop() {
   ball.getBallposition();
-  float AC_val = ac.getAC_val();
+  float AC_val = 100;
   angle go_ang(ball.ang,true);
   int max_val = go_val;
   int line_flag = line.getLINE_Vec();
+  int AC_flag = 0; //0だったら絶対的な角度とる 1だったらゴール向く
+  int kick_ = 0; //0だったらキックしない 1だったらキック
+
   if(line_flag == 1){
     A = 20;
   }
@@ -102,6 +105,9 @@ void loop() {
     int ang_90_ = ang_90;
     int ang_30_ = ang_30;
     int ang_10_ = ang_10;
+    if(70 < abs(ac.dir)){
+      ball.ang -= ac.dir;
+    }
 
     if(abs(ball.ang) < 10){
       go_ang = ang_10_ / 10.0 * ball.ang;
@@ -127,13 +133,15 @@ void loop() {
       Timer.reset();
       kick_flag = 0;
     }
+    AC_flag = 1;
+    
     if(kick_flag == 0 && 200 < Timer.read_ms()){
-      kick();
+      kick_ = 1;
       kick_flag = 1;
       Timer.reset();
     }
     else if(kick_flag == 1 && 400 < Timer.read_ms()){
-      kick();
+      kick_ = 1;
       Timer.reset();
     }
     go_ang = 0;
@@ -148,28 +156,26 @@ void loop() {
     go_ang = line.decideGoang(line_ang,Line_flag);
   }
 
-  // if(line.side_flag == 1){
-  //   go_ang = 90;
-  // }
-  // else if(line.side_flag == 2){
-  //   go_ang = -90;
-  // }
-  // else if(line.side_flag == 3){
-  //   go_ang = 180;
-  // }
-  // else if(line.side_flag == 4){
-  //   go_ang = 0;
-  // }
+  if(AC_flag == 0){
+    AC_val = ac.getAC_val();
+  }
+  else if(AC_flag == 1){
+    AC_val = ac.getCam_val(cam_front.ang);
+  }
 
-  // MOTOR.moveMotor_0(go_ang,max_val,AC_val,0);
+  if(kick_ == 1){
+    kick();
+  }
+
+  MOTOR.moveMotor_0(go_ang,max_val,AC_val,0);
   // Serial.print(" | ");
   // Serial.print(go_ang.degree);
   // Serial.print(" | ");
   // ball.print();
   // Serial.print(" | ");
   // line.print();
-  Serial.print(" | ");
-  cam_front.print();
+  // Serial.print(" | ");
+  // cam_front.print();
   if(toogle_f != digitalRead(toogle_P)){
     MOTOR.motor_0();
     Switch();
