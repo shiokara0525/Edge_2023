@@ -16,15 +16,17 @@ timer Timer;
 
 int A = 0;
 int B = 999;
-const int ang_180 = 230;
-const int ang_90 = 160;
+const int ang_180 = 210;
+const int ang_90 = 150;
 const int ang_30 = 70;
 const int ang_10 = 10;
 const int far_th = 130;
+int go_val = 220;
 //======================================================きっく======================================================//
 void kick();
 const int C = 32;
 const int K = 31;
+int kick_flag = 0;
 //======================================================neopiku======================================================//
 #define DELAYVAL 500
 #define PIN        30 
@@ -35,7 +37,7 @@ int Neo_p = 999;
 
 Adafruit_NeoPixel pixels(DELAYVAL, PIN, NEO_GRB + NEO_KHZ800);
 //======================================================カメラ======================================================//
-int goal_color = 0;  //青が0 黄色が1
+int goal_color = 1;  //青が0 黄色が1
 Cam cam_front(4);
 Cam cam_back(3);
 //======================================================スタートスイッチ======================================================//
@@ -76,6 +78,7 @@ void loop() {
   ball.getBallposition();
   float AC_val = ac.getAC_val();
   angle go_ang(ball.ang,true);
+  int max_val = go_val;
   int line_flag = line.getLINE_Vec();
   if(line_flag == 1){
     A = 20;
@@ -104,6 +107,7 @@ void loop() {
       go_ang = ang_10_ / 10.0 * ball.ang;
     }
     else if(abs(ball.ang) < 30){
+      max_val -= 30;
       go_ang = ((ang_30_ - ang_10_) / 20.0 * (abs(ball.ang) - 10) + ang_10_);
     }
     else if(abs(ball.ang) < 90){
@@ -121,14 +125,16 @@ void loop() {
     if(A != B){
       B = A;
       Timer.reset();
+      kick_flag = 0;
     }
-    if(Timer.read_ms() < 1000){
-      go_ang = 0;
-    }
-    else{
-      go_ang = ball.ang;
-      Timer.reset();
+    if(kick_flag == 0 && 200 < Timer.read_ms()){
       kick();
+      kick_flag = 1;
+      Timer.reset();
+    }
+    else if(kick_flag == 1 && 400 < Timer.read_ms()){
+      kick();
+      Timer.reset();
     }
     go_ang = 0;
   }
@@ -142,26 +148,28 @@ void loop() {
     go_ang = line.decideGoang(line_ang,Line_flag);
   }
 
-  if(line.side_flag == 1){
-    go_ang = 90;
-  }
-  else if(line.side_flag == 2){
-    go_ang = -90;
-  }
-  else if(line.side_flag == 3){
-    go_ang = 180;
-  }
-  else if(line.side_flag == 4){
-    go_ang = 0;
-  }
+  // if(line.side_flag == 1){
+  //   go_ang = 90;
+  // }
+  // else if(line.side_flag == 2){
+  //   go_ang = -90;
+  // }
+  // else if(line.side_flag == 3){
+  //   go_ang = 180;
+  // }
+  // else if(line.side_flag == 4){
+  //   go_ang = 0;
+  // }
 
-  MOTOR.moveMotor_0(go_ang,160,AC_val,0);
+  // MOTOR.moveMotor_0(go_ang,max_val,AC_val,0);
   // Serial.print(" | ");
   // Serial.print(go_ang.degree);
   // Serial.print(" | ");
   // ball.print();
   // Serial.print(" | ");
   // line.print();
+  Serial.print(" | ");
+  cam_front.print();
   if(toogle_f != digitalRead(toogle_P)){
     MOTOR.motor_0();
     Switch();
@@ -203,19 +211,19 @@ void kick(){
 
 
 void serialEvent3(){
-  uint8_t reBuf[5];
-  if(Serial3.available() < 5){
+  uint8_t reBuf[6];
+  if(Serial3.available() < 6){
     return;
   }
 
-  for(int i = 0; i < 5; i++){
+  for(int i = 0; i < 6; i++){
     reBuf[i] = Serial3.read();
   }
   while(Serial3.available()){
     Serial3.read();
   }
 
-  if(reBuf[0] == 38 && reBuf[4] == 37){
+  if(reBuf[0] == 38 && reBuf[5] == 37){
     if(reBuf[3] == 0){
       cam_back.on = 0;
     }
@@ -224,14 +232,12 @@ void serialEvent3(){
         cam_back.on = 1;
         cam_back.Size = reBuf[3];
         cam_back.ang = -(reBuf[2] - 127);
-      }
-      else{
-        cam_back.on = 0;
+        cam_back.senter = reBuf[4];
       }
     }
   }
 
-  for(int i = 0; i < 5; i++){
+  for(int i = 0; i < 6; i++){
     // Serial.print(reBuf[i]);
     // Serial.print(" ");
   }
@@ -242,19 +248,19 @@ void serialEvent3(){
 
 
 void serialEvent4(){
-  uint8_t reBuf[5];
-  if(Serial4.available() < 5){
+  uint8_t reBuf[6];
+  if(Serial4.available() < 6){
     return;
   }
 
-  for(int i = 0; i < 5; i++){
+  for(int i = 0; i < 6; i++){
     reBuf[i] = Serial4.read();
   }
   while(Serial4.available()){
     Serial4.read();
   }
 
-  if(reBuf[0] == 38 && reBuf[4] == 37){
+  if(reBuf[0] == 38 && reBuf[5] == 37){
     if(reBuf[3] == 0){
       cam_front.on = 0;
     }
@@ -262,19 +268,16 @@ void serialEvent4(){
       if(cam_front.color == reBuf[1]){
         cam_front.on = 1;
         cam_front.Size = reBuf[3];
-        cam_front.ang = -(reBuf[2] - 127);
-      }
-      else{
-        cam_front.on = 0;
+        cam_front.ang = (reBuf[2]-80)*3/4;
+        cam_front.senter = reBuf[4];
       }
     }
   }
-  for(int i = 0; i < 5; i++){
-    Serial.print(reBuf[i]);
-    Serial.print(" ");
+
+  for(int i = 0; i < 6; i++){
+    // Serial.print(" ");
+    // Serial.print(reBuf[i]);
   }
-  // Serial.println();
-  // Serial.print("sawa");
 }
 
 
