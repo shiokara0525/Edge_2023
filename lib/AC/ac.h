@@ -36,8 +36,8 @@ private:
   double val_old = 0;  //1F前の姿勢制御の値
   double dir_old = 0;
 
-  const float kp = 2.5;  //比例制御の係数
-  const float kd = 1.5; //微分制御の係数
+  const float kp = 1.5;  //比例制御の係数
+  const float kd = 5.0; //微分制御の係数
   const float time = 100 / 3;
 
   const float kp_c = 0.9;
