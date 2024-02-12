@@ -13,17 +13,21 @@ LINE line;
 AC ac;
 motor_attack MOTOR;
 timer Timer;
+timer Main;
 
 int A = 0;
 int B = 999;
-const int ang_180 = 210;
-const int ang_90 = 150;
-const int ang_30 = 70;
+const int ang_180 = 230;
+const int ang_90 = 140;
+const int ang_30 = 90;
 const int ang_10 = 10;
 const int far_th = 130;
 int go_val = 220;
+int print_flag = 0;// 1だったらシリアルプリントする
 //======================================================きっく======================================================//
 void kick();
+timer kick_time;
+int Kick_F = 0;
 const int C = 32;
 const int K = 31;
 int kick_flag = 0;
@@ -75,27 +79,41 @@ void setup() {
 }
 
 void loop() {
+  Main.reset();
   ball.getBallposition();
+  cam_front.getCamdata();
   float AC_val = 100;
   angle go_ang(ball.ang,true);
   int max_val = go_val;
   int line_flag = line.getLINE_Vec();
   int AC_flag = 0; //0だったら絶対的な角度とる 1だったらゴール向く
   int kick_ = 0; //0だったらキックしない 1だったらキック
+  int M_flag = 1; //1だったら動き続ける 0だったら止まる
 
   if(line_flag == 1){
     A = 20;
   }
   else{
-    if(ball.ball_get == 1){
-      A = 11;
+    if(ball.flag == 1){
+      if(ball.ball_get == 1){
+        A = 11;
+      }
+      else{
+        A = 10;
+      }
     }
     else{
-      A = 10;
+      A = 5;
     }
   }
 
-
+  if(A == 5){
+    if(A != B){
+      B = A;
+    }
+    M_flag = 0;
+    MOTOR.motor_0();
+  }
 
   if(A == 10){  //回り込むやつ
     if(A != B){
@@ -134,15 +152,16 @@ void loop() {
       kick_flag = 0;
     }
     AC_flag = 1;
-    
-    if(kick_flag == 0 && 200 < Timer.read_ms()){
-      kick_ = 1;
-      kick_flag = 1;
-      Timer.reset();
-    }
-    else if(kick_flag == 1 && 400 < Timer.read_ms()){
-      kick_ = 1;
-      Timer.reset();
+    if(abs(cam_front.ang) < 10 || cam_front.senter == 1){
+      if(kick_flag == 0 && 200 < Timer.read_ms()){
+        kick_ = 1;
+        kick_flag = 1;
+        Timer.reset();
+      }
+      else if(kick_flag == 1 && 400 < Timer.read_ms()){
+        kick_ = 1;
+        Timer.reset();
+      }
     }
     go_ang = 0;
   }
@@ -177,18 +196,50 @@ void loop() {
   }
 
   if(kick_ == 1){
-    kick();
+    if(Kick_F == 0){
+      Kick_F = 1;
+      kick_time.reset();
+    }
   }
 
-  MOTOR.moveMotor_0(go_ang,max_val,AC_val,0);
-  // Serial.print(" | ");
-  // Serial.print(go_ang.degree);
-  // Serial.print(" | ");
-  // ball.print();
-  // Serial.print(" | ");
-  // line.print();
-  // Serial.print(" | ");
-  // cam_front.print();
+  if(Kick_F == 1){
+    if(kick_time.read_ms() < 10){
+      digitalWrite(C,LOW);
+    }
+    else if(kick_time.read_ms() < 60){
+      digitalWrite(K,HIGH);
+      digitalWrite(LED,HIGH);
+    }
+    else if(kick_time.read_ms() < 70){
+      digitalWrite(K,LOW);
+      digitalWrite(LED,LOW);
+    }
+    else{
+      digitalWrite(C,HIGH);
+      Kick_F = 0;
+    }
+  }
+
+  if(M_flag == 1){
+    MOTOR.moveMotor_0(go_ang,max_val,AC_val,0);
+  }
+  else if(M_flag == 0){
+    MOTOR.motor_0();
+  }
+  
+  if(print_flag == 1){
+    // Serial.print(" | ");
+    // Serial.print(go_ang.degree);
+    // Serial.print(" | ");
+    // ball.print();
+    // Serial.print(" | ");
+    // line.print();
+    Serial.print(" time : ");
+    Serial.print(Main.read_us());
+    Serial.print(" | ");
+    cam_front.print();
+  }
+
   if(toogle_f != digitalRead(toogle_P)){
     MOTOR.motor_0();
     Switch();
@@ -230,6 +281,7 @@ void kick(){
 
 
 void serialEvent3(){
+  // Serial.print("sawa1");
   uint8_t reBuf[6];
   if(Serial3.available() < 6){
     return;
@@ -243,16 +295,8 @@ void serialEvent3(){
   }
 
   if(reBuf[0] == 38 && reBuf[5] == 37){
-    if(reBuf[3] == 0){
-      cam_back.on = 0;
-    }
-    else{
-      if(cam_back.color == reBuf[1]){
-        cam_back.on = 1;
-        cam_back.Size = reBuf[3];
-        cam_back.ang = -(reBuf[2] - 127);
-        cam_back.senter = reBuf[4];
-      }
+    for(int i = 0; i < 4; i++){
+      cam_front.data_byte[i] = reBuf[i+1];
     }
   }
 
@@ -267,6 +311,7 @@ void serialEvent3(){
 
 
 void serialEvent4(){
+  // Serial.print("sawa2");
   uint8_t reBuf[6];
   if(Serial4.available() < 6){
     return;
@@ -280,29 +325,21 @@ void serialEvent4(){
   }
 
   if(reBuf[0] == 38 && reBuf[5] == 37){
-    if(reBuf[3] == 0){
-      cam_front.on = 0;
-    }
-    else{
-      if(cam_front.color == reBuf[1]){
-        cam_front.on = 1;
-        cam_front.Size = reBuf[3];
-        cam_front.ang = (reBuf[2]-80)*3/4;
-        cam_front.senter = reBuf[4];
-      }
+    for(int i = 0; i < 4; i++){
+      cam_front.data_byte[i] = reBuf[i+1];
     }
   }
 
   for(int i = 0; i < 6; i++){
-    // Serial.print(" ");
-    // Serial.print(reBuf[i]);
+    Serial.print(" ");
+    Serial.print(reBuf[i]);
   }
 }
 
 
 
 void serialEvent6(){
-  // Serial.print(" sawa ");
+  // Serial.println(" sawa3 ");
   uint8_t read[6];
   int n = 1;
   if(Serial6.available() < 6){
@@ -341,6 +378,7 @@ void serialEvent6(){
 
 
 void serialEvent8(){
+  // Serial.print("sawa4");
   int n;
   int x,y;
   word revBuf_word[7];

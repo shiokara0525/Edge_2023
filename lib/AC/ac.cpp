@@ -32,8 +32,14 @@ float AC::getCam_val(float c_ang_){
   c_ang = c_ang_;
   kkp = -c_ang;  //比例制御の値を計算
   kkd = ((kkp - kkp_old) * time);  //微分制御の値を計算
+  Serial.print(" kkp : ");
+  Serial.print(kkp);
+  Serial.print(" kkp_old : ");
+  Serial.print(kkp_old);
+  Serial.print(" kkd : ");
+  Serial.print(kkd);
   kkp_old = kkp;
-  
+
   kkp *= kp;
   kkd *= kd;
   if(150 < abs(kkp)){
@@ -45,6 +51,8 @@ float AC::getCam_val(float c_ang_){
   
   val = kkp + kkd;  //最終的に返す値を計算
   ac_timer.reset();
+  Serial.print(" val : ");
+  Serial.print(val);
 
   return val;  //値返す
 }
