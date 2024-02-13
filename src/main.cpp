@@ -19,7 +19,7 @@ int A = 0;
 int B = 999;
 const int ang_180 = 230;
 const int ang_90 = 140;
-const int ang_30 = 90;
+const int ang_30 = 100;
 const int ang_10 = 10;
 const int far_th = 130;
 int go_val = 220;
@@ -94,16 +94,21 @@ void loop() {
     A = 20;
   }
   else{
-    if(ball.flag == 1){
-      if(ball.ball_get == 1){
-        A = 11;
-      }
-      else{
-        A = 10;
-      }
+    if(line.side_flag != 0){
+      A = 21;
     }
     else{
-      A = 5;
+      if(ball.flag == 1){
+        if(ball.ball_get == 1){
+          A = 11;
+        }
+        else{
+          A = 10;
+        }
+      }
+      else{
+        A = 5;
+      }
     }
   }
 
@@ -131,7 +136,7 @@ void loop() {
       go_ang = ang_10_ / 10.0 * ball.ang;
     }
     else if(abs(ball.ang) < 30){
-      max_val -= 30;
+      max_val -= 50;
       go_ang = ((ang_30_ - ang_10_) / 20.0 * (abs(ball.ang) - 10) + ang_10_);
     }
     else if(abs(ball.ang) < 90){
@@ -175,18 +180,22 @@ void loop() {
     go_ang = line.decideGoang(line_ang,Line_flag);
   }
 
-  // if(line.side_flag == 1){
-  //   go_ang = -90;
-  // }
-  // else if(line.side_flag == 2){
-  //   go_ang = 90;
-  // }
-  // else if(line.side_flag == 3){
-  //   go_ang = 180;
-  // }
-  // else if(line.side_flag == 4){
-  //   go_ang = 0;
-  // }
+  if(A == 21){
+    if(line.side_flag == 1){
+      go_ang = -90;
+    }
+    else if(line.side_flag == 2){
+      go_ang = 90;
+    }
+    else if(line.side_flag == 3){
+      go_ang = 180;
+    }
+    else if(line.side_flag == 4){
+      go_ang = 0;
+    }
+  }
+
+
 
   if(AC_flag == 0){
     AC_val = ac.getAC_val();
