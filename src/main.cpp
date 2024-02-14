@@ -19,10 +19,10 @@ int A = 0;
 int B = 999;
 const int ang_180 = 230;
 const int ang_90 = 140;
-const int ang_30 = 100;
-const int ang_10 = 10;
+const int ang_30 = 90;
+const int ang_10 = 20;
 const int far_th = 130;
-int go_val = 220;
+int go_val = 200;
 int print_flag = 1;// 1だったらシリアルプリントする
 //======================================================きっく======================================================//
 void kick();
@@ -94,12 +94,12 @@ void loop() {
     A = 20;
   }
   else{
-    // if(line.side_flag != 0){
-    //   A = 21;
-    // }
-    {
+    if(line.side_flag != 0){
+      A = 21;
+    }
+    else{
       if(ball.flag == 1){
-        if(ball.ball_get == 1){
+        if(ball.ball_get == 1 || ball.ball_get == 2){
           A = 11;
         }
         else{
@@ -129,15 +129,16 @@ void loop() {
     int ang_30_ = ang_30;
     int ang_10_ = ang_10;
     if(70 < abs(ac.dir)){
-      ball.ang -= ac.dir;
+      // ball.ang -= ac.dir;
     }
 
     if(abs(ball.ang) < 10){
       go_ang = ang_10_ / 10.0 * ball.ang;
     }
     else if(abs(ball.ang) < 30){
-      max_val -= 50;
+      max_val -= 100;
       go_ang = ((ang_30_ - ang_10_) / 20.0 * (abs(ball.ang) - 10) + ang_10_);
+
     }
     else if(abs(ball.ang) < 90){
       go_ang = ((ang_90_ - ang_30_) / 60.0 * (abs(ball.ang) - 30) + ang_30_);
@@ -236,15 +237,15 @@ void loop() {
     MOTOR.motor_0();
   }
   if(print_flag == 1){
-    // Serial.print(" | ");
-    // Serial.print(go_ang.degree);
+    Serial.print(" | ");
+    Serial.print(go_ang.degree);
     // Serial.print(" | ");
     // Serial.print(" ac : ");
     // Serial.print(AC_flag);
     // Serial.print(" | ");
     // ball.print();
     // Serial.print(" | ");
-    // line.print();
+    line.print();
     // Serial.print(" | ");
     // ac.print();
     // Serial.print(" time : ");

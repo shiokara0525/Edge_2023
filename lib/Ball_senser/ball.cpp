@@ -1,14 +1,14 @@
 #include<ball.h>
 
 BALL::BALL(){
-    ball_x.setLenth(3);
-    ball_y.setLenth(3);
+    ball_x.setLenth(10);
+    ball_y.setLenth(10);
     far__.setLenth(500);
 }
 
 
 void BALL::begin(){
-    Serial8.begin(57600);
+    Serial8.begin(115200);
 }
 
 
