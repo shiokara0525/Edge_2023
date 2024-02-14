@@ -239,18 +239,18 @@ void loop() {
     Serial.print(" | ");
     Serial.print(go_ang.degree);
     Serial.print(" | ");
-    Serial.print(" ac : ");
-    Serial.print(AC_flag);
+    // Serial.print(" ac : ");
+    // Serial.print(AC_flag);
     // Serial.print(" | ");
     // ball.print();
-    Serial.print(" | ");
+    // Serial.print(" | ");
     line.print();
     Serial.print(" | ");
-    ac.print();
+    // ac.print();
     // Serial.print(" time : ");
     // Serial.print(Main.read_us());
     // Serial.print(" | ");
-    // cam_front.print();
+    cam_front.print();
   }
 
   if(toogle_f != digitalRead(toogle_P)){

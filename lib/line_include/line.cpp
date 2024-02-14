@@ -36,10 +36,10 @@ int LINE::getLINE_Vec() { //ラインのベクトル(距離,角度)を取得す�
     }
   }
 
-  data_on[25] = 0;
+  data_on[26] = 0;
 
   for(int i = 0; i < 24; i++){
-    if(i == 17 || i == 4){
+    if(i == 17 || i == 22){
       continue;
     }
     if(flag == 0){
@@ -68,10 +68,10 @@ int LINE::getLINE_Vec() { //ラインのベクトル(距離,角度)を取得す�
       }
     }
   }
-  // for(int i = 0; i < 27; i++){
-  //   Serial.print(" ");
-  //   Serial.print(data_on[i]);
-  // }
+  for(int i = 0; i < 27; i++){
+    Serial.print(" ");
+    Serial.print(data_on[i]);
+  }
 
   if(data_on[24] == 1 && data_on[25] == 0){
     side_flag = 1;
@@ -146,22 +146,22 @@ float LINE::decideGoang(angle linedir,int line_flag){
 
 
 double line_switch(int i,double ang,int line_flag){  //ラインを踏みこしてるときの処理とか判定とか書いてあるよ
-  if(i == 11 || i <= 1){
+  if(!(5 <= i && i <= 7)){
     if(line_flag == 3){
       return 0.0;
     }
   }
-  else if(2 <= i && i <= 4){
+  if(!(8 <= i && i <= 10)){
     if(line_flag == 4){
       return 90.0;
     }
   }
-  else if(5 <= i && i <= 7){
+  if(!(i == 11 || i <= 1)){
     if(line_flag == 1){
       return 180.0;
     }
   }
-  else if(8 <= i && i <= 10){
+  if(!(2 <= i && i <= 4)){
     if(line_flag == 2){
       return -90.0;
     }
