@@ -230,27 +230,27 @@ void loop() {
   }
 
   if(M_flag == 1){
-    // MOTOR.moveMotor_0(go_ang,max_val,AC_val,0);
+    MOTOR.moveMotor_0(go_ang,max_val,AC_val,0);
   }
   else if(M_flag == 0){
     MOTOR.motor_0();
   }
   if(print_flag == 1){
-    Serial.print(" | ");
-    Serial.print(go_ang.degree);
-    Serial.print(" | ");
+    // Serial.print(" | ");
+    // Serial.print(go_ang.degree);
+    // Serial.print(" | ");
     // Serial.print(" ac : ");
     // Serial.print(AC_flag);
     // Serial.print(" | ");
     // ball.print();
     // Serial.print(" | ");
-    line.print();
-    Serial.print(" | ");
+    // line.print();
+    // Serial.print(" | ");
     // ac.print();
     // Serial.print(" time : ");
     // Serial.print(Main.read_us());
     // Serial.print(" | ");
-    cam_front.print();
+    // cam_front.print();
   }
 
   if(toogle_f != digitalRead(toogle_P)){
