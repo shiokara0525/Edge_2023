@@ -235,14 +235,18 @@ void loop() {
   else if(M_flag == 0){
     MOTOR.motor_0();
   }
-  
   if(print_flag == 1){
     Serial.print(" | ");
     Serial.print(go_ang.degree);
+    Serial.print(" | ");
+    Serial.print(" ac : ");
+    Serial.print(AC_flag);
     // Serial.print(" | ");
     // ball.print();
     Serial.print(" | ");
     line.print();
+    Serial.print(" | ");
+    ac.print();
     // Serial.print(" time : ");
     // Serial.print(Main.read_us());
     // Serial.print(" | ");
