@@ -8,7 +8,7 @@ BALL::BALL(){
 
 
 void BALL::begin(){
-    Serial8.begin(57600);
+    Serial8.begin(115200);
 }
 
 
