@@ -162,8 +162,8 @@ void serialEvent4(){
     }
   }
   for(int i = 0; i < 5; i++){
-    Serial.print(reBuf[i]);
-    Serial.print(" ");
+    // Serial.print(reBuf[i]);
+    // Serial.print(" ");
   }
   // Serial.println();
   // Serial.print("sawa");
