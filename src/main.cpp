@@ -78,9 +78,9 @@ void loop() {
   // Serial.print(" | ");
   Serial.println();
 
-  if(ball.ball_get == 1){
-    MOTOR.Moutput(4,200);
-    delay(2000);
+  if(1){
+    // MOTOR.Moutput(4,200);
+    delay(5000);
     kick();
   }
 
@@ -94,16 +94,24 @@ void loop() {
 
 
 void Switch(){
+  // digitalWrite(LED,HIGH);
+  // toogle_f = digitalRead(toogle_P);
+  // delay(100);
+  // while(digitalRead(toogle_P) == toogle_f);
+  // digitalWrite(LED,LOW);
+  // ac.setup_2();
+  // Target_dir = ac.dir_n;
+  // toogle_f = digitalRead(toogle_P);
+  // delay(100);
+  // while(digitalRead(toogle_P) == toogle_f);
+  // toogle_f = digitalRead(toogle_P);  //トグルがもげちゃったからいったんLチカでスタート
   digitalWrite(LED,HIGH);
-  toogle_f = digitalRead(toogle_P);
-  delay(100);
-  while(digitalRead(toogle_P) == toogle_f);
+  delay(1000);
   digitalWrite(LED,LOW);
   ac.setup_2();
-  toogle_f = digitalRead(toogle_P);
-  delay(100);
-  while(digitalRead(toogle_P) == toogle_f);
-  toogle_f = digitalRead(toogle_P);
+  // Target_dir = ac.dir_n;
+  delay(1000);
+  digitalWrite(LED,HIGH);
 }
 
 
@@ -114,7 +122,7 @@ void kick(){
   delay(10);
   digitalWrite(K,HIGH);
   digitalWrite(LED,HIGH);
-  delay(10);
+  delay(50);
   digitalWrite(K,LOW);
   digitalWrite(LED,LOW);
   delay(10);
