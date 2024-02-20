@@ -27,7 +27,7 @@ void setup() {
 }
 
 void loop() {  
-  volume = 1100;  //可変抵抗の値を1.0で掛けて変数volumeに入れる．値を調整したい場合は倍率を変更する．
+  volume = 1500;  //可変抵抗の値を1.0で掛けて変数volumeに入れる．値を調整したい場合は倍率を変更する．
   Serial.println(volume);  //可変抵抗の値をシリアルモニタに表示
   esc.writeMicroseconds(volume);  // パルス幅 `volume` のPWM信号を送信する
 }
