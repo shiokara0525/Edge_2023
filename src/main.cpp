@@ -1,12 +1,65 @@
-#include<Arduino.h>
-#include <Servo.h>
-#include<BLDC.h>
+#include <Arduino.h>
+#include<Adafruit_NeoPixel.h>
+#include<ac.h>
+#include<ball.h>
+#include<line.h>
+#include<motor_a.h>
+#include<MA.h>
+#include<timer.h>
+#include<Cam.h>
 
-BLDC dribbler;
+BALL ball;
+LINE line;
+AC ac;
+motor_attack MOTOR;
+
+//======================================================きっく======================================================//
+void kick();
+const int C = 32;
+const int K = 31;
+//======================================================neopiku======================================================//
+#define DELAYVAL 500
+#define PIN        30 
+#define NUMPIXELS 16
+
+int Neo[16] = {12,11,10,9,8,7,6,5,4,3,2,1,0,15,14,13};
+int Neo_p = 999;
+
+Adafruit_NeoPixel pixels(DELAYVAL, PIN, NEO_GRB + NEO_KHZ800);
+//======================================================カメラ======================================================//
+int goal_color = 0;  //青が0 黄色が1
+Cam cam_front(4);
+Cam cam_back(3);
+//======================================================スタートスイッチ======================================================//
+int LED = 13;
+int toogle_f;
+int toogle_P = 27;
+void Switch();
+//======================================================関数たち======================================================/
 
 void setup() {
   Serial.begin(9600);
-  dribbler.setup();
+  ball.begin();
+  line.begin();
+  ac.setup();
+  cam_front.begin();
+  cam_back.begin();
+  pixels.begin();
+  pixels.clear();
+  pinMode(LED,OUTPUT);
+  pinMode(K,OUTPUT);
+  pinMode(C,OUTPUT);
+  digitalWrite(C,HIGH);
+  digitalWrite(K,LOW);
+  if(goal_color == 0){
+    cam_front.color = 0;  //青が0 黄色が1
+    cam_back.color = 1;  //青が0 黄色が1
+  }
+  else if(goal_color == 1){
+    cam_front.color = 1;  //青が0 黄色が1
+    cam_back.color = 0;  //青が0 黄色が1
+  }
+  Switch();
 }
 
 void loop() {
