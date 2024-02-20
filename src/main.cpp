@@ -7,11 +7,14 @@
 #include<MA.h>
 #include<timer.h>
 #include<Cam.h>
+#include<BLDC.h>
+
 
 BALL ball;
 LINE line;
 AC ac;
 motor_attack MOTOR;
+BLDC dribbler;
 
 //======================================================きっく======================================================//
 void kick();
@@ -44,6 +47,7 @@ void setup() {
   ac.setup();
   cam_front.begin();
   cam_back.begin();
+  dribbler.setup();
   pixels.begin();
   pixels.clear();
   pinMode(LED,OUTPUT);
@@ -60,6 +64,7 @@ void setup() {
     cam_back.color = 0;  //青が0 黄色が1
   }
   Switch();
+  dribbler.run();
 }
 
 void loop() {
@@ -79,7 +84,6 @@ void loop() {
   Serial.println();
 
   if(1){
-    // MOTOR.Moutput(4,200);
     delay(5000);
     kick();
   }
