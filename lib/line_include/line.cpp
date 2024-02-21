@@ -6,7 +6,7 @@ LINE::LINE(){
 }
 
 void LINE::begin(){
-  Serial6.begin(57600);
+  Serial6.begin(115200);
   for(int i = 0; i < 24; i++){
     ele_Y[i] = sin(radians(15 * i));
     ele_X[i] = cos(radians(15 * i));
@@ -35,9 +35,10 @@ int LINE::getLINE_Vec() { //ラインのベクトル(距離,角度)を取得す�
       }
     }
   }
+
+  data_on[26] = 0;
+
   for(int i = 0; i < 24; i++){
-    // Serial.print(" ");
-    // Serial.print(data_on[i]);
     if(i == 3){
       continue;
     }
@@ -55,7 +56,7 @@ int LINE::getLINE_Vec() { //ラインのベクトル(距離,角度)を取得す�
       }
     }
 
-    if(i == 23){
+    if(i == 23){         //23がくるってるから応急措置 治ったら22のとこ全部23にする!!!!!!!!!!
       if(data_on[23] == 1 && data_on[0] == 1){
         block_first[0] = block_first[block_num];
         block_first[block_num] = 0;
@@ -113,11 +114,10 @@ int LINE::getLINE_Vec() { //ラインのベクトル(距離,角度)を取得す�
 
 
 int LINE::switchLineflag(angle linedir){
-  linedir.to_range(-45,false);
-  line_flag = 0;
-  for(int i = 0; i < 4; i++){  //角度を四つに区分して、それぞれどの区分にいるか判定するよ
-    if(-45 +(i * 90) < linedir.degree && linedir.degree <= 45 +(i * 90)){  //それ以外の三つの区分(右、後ろ、左で判定してるよ)
-      line_flag = i + 1;
+  linedir.to_range(-15,false);
+  for(int i = 0; i < 12; i++){  //角度を12つに区分して、それぞれどの区分にいるか判定する
+    if(-15 +(i * 30) <= linedir.degree && linedir.degree < 15 +(i * 30)){  //時計回りにどの区分にいるか判定してるよ
+      line_flag = i;
     }
   }
   
@@ -125,14 +125,11 @@ int LINE::switchLineflag(angle linedir){
 }
 
 
-double line_switch(int,double,int);
-
-
 float LINE::decideGoang(angle linedir,int line_flag){
   float goang = 0;
   linedir.to_range(-15,false);
   for(int i = 0; i < 12; i++){  //角度を12つに区分して、それぞれどの区分にいるか判定する
-    if(-15 +(i * 30) < linedir.degree && linedir.degree <= 15 +(i * 30)){  //時計回りにどの区分にいるか判定してるよ
+    if(-15 +(i * 30) <= linedir.degree && linedir.degree < 15 +(i * 30)){  //時計回りにどの区分にいるか判定してるよ
       goang = line_switch(i,linedir.degree,line_flag);
     }
   }
@@ -140,32 +137,30 @@ float LINE::decideGoang(angle linedir,int line_flag){
 }
 
 
-double line_switch(int i,double ang,int line_flag){  //ラインを踏みこしてるときの処理とか判定とか書いてあるよ
-  if(i == 11 || i <= 1){
-    if(line_flag == 3){
-      return 0.0;
+double LINE::line_switch(int i,double ang,int line_flag){  //ラインを踏みこしてるときの処理とか判定とか書いてあるよ
+  A = 0;
+  angle go_(i*30-180,true);
+  if(line_flag <= 3){
+    if(3 + line_flag <= i && i <= 8 + line_flag){
+      go_ = line_flag * 30 - 180;
+      A++;
     }
   }
-  else if(2 <= i && i <= 4){
-    if(line_flag == 4){
-      return 90.0;
+  else if(4 <= line_flag && line_flag <= 8){
+    if(i <= line_flag - 4 || line_flag + 3 <= i){
+      go_ = line_flag * 30 - 180;
+      A++;
     }
   }
-  else if(5 <= i && i <= 7){
-    if(line_flag == 1){
-      return 180.0;
+  else if(9 <= line_flag){
+    if(line_flag - 9 <= i && i <= line_flag - 4){
+      go_ = line_flag * 30 - 180;
+      A++;
     }
   }
-  else if(8 <= i && i <= 10){
-    if(line_flag == 2){
-      return -90.0;
-    }
-  }
+  go_.to_range(-180,false);
 
-  double goang = (i * 30.0)- 180.0;
-
-
-  return goang;
+  return go_.degree;
 }
 
 
@@ -186,4 +181,14 @@ void LINE::print(){
   Serial.print(side_flag);
   Serial.print(" flag : ");
   Serial.print(line_flag);
+  Serial.print(" A_ : ");
+  Serial.print(A);
+}
+
+
+void LINE::print_2(){
+  for(int i = 0; i < 27; i++){
+    Serial.print(" ");
+    Serial.print(data_on[i]);
+  }
 }
