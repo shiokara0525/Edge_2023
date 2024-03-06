@@ -12,8 +12,19 @@ BALL ball;
 LINE line;
 AC ac;
 motor_attack MOTOR;
+int A = 0;
+int B = 999;
+int C = 0;
+timer Timer;
+timer Timer_wait;
+timer Timer_line;
+int T_l;
+int M_val = 220;
+int Back_M_val = 255;
+int print_flag = 1;
 
 //======================================================neopiku======================================================//
+
 #define DELAYVAL 500
 #define PIN        30 
 #define NUMPIXELS 16
@@ -55,22 +66,88 @@ void setup() {
 }
 
 void loop() {
-  line.getLINE_Vec();
+  angle go_ang(0,true);
+  int Line_flag = line.getLINE_Vec();
   ball.getBallposition();
-  ac.getAC_val();
-  // ball.print();
-  // Serial.print(" | ");
-  // line.print();
-  // Serial.print(" | ");
-  // line.print_2();
-  // Serial.print(" | ");
-  // ac.print();
-  // Serial.print(" | ");
-  // cam_front.print();
-  // Serial.print(" | ");
-  // cam_back.print();
-  // Serial.print(" | ");
-  Serial.println();
+  float AC_val = ac.getAC_val();
+  int max_val = M_val;
+  int val_flag = 0;
+
+
+  if((A == 20 || A == 30) && Timer_wait.read_ms() < 1000){
+    A = 30;
+    C = 1;
+  }
+  else{
+    C = 0;
+  }
+
+  if(C == 0){
+    if(Line_flag == 1 || line.side_flag == 2){
+      A = 20;
+    }
+    else{
+      A = 10;
+    }
+  }
+
+
+  if(A == 10){
+    if(A != B){
+      Timer.reset();
+    }
+    go_ang = -90;
+  }
+
+  if(A == 20){
+    if(A != B){
+      Timer.reset();
+      Timer_wait.reset();
+    }
+    go_ang = 90;
+    val_flag = 1;
+  }
+
+  if(A == 30){
+    if(A != B){
+      Timer.reset();
+    }
+    go_ang = 90;
+    val_flag = 1;
+  }
+
+  if(val_flag = 0){
+    max_val = M_val;
+  }
+  else if(val_flag == 1){
+    max_val = Back_M_val;
+  }
+
+  MOTOR.moveMotor_0(go_ang,max_val,AC_val,0);
+
+  if(print_flag == 1){
+    // Serial.print(" | ");
+    // ac.print();
+    // Serial.print(" A : ");
+    // Serial.print(A);
+    // Serial.print(" | ac : ");
+    // Serial.print(AC_val);
+    // Serial.print(" | ");
+    // ball.print();
+    // Serial.print(" | ");
+    // line.print();
+    // Serial.print(" | ");
+    // line.print_2();
+    // Serial.print(" | ");
+    // ac.print();
+    // Serial.print(" | ");
+    // cam_front.print();
+    // Serial.print(" | ");
+    // cam_back.print();
+    // Serial.print(" | T_l : ");
+    // Serial.print(T_l);
+    Serial.println();
+  }
 
   if(toogle_f != digitalRead(toogle_P)){
     pixels.clear();
@@ -196,6 +273,8 @@ void serialEvent6(){
   }
 
   if(read[0] == 38 && read[5] == 37){
+    T_l = Timer_line.read_us();
+    Timer_line.reset();
     line.data_byte[0] = read[1];
     line.data_byte[1] = read[2];
     line.data_byte[2] = read[3];

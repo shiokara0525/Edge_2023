@@ -6,8 +6,9 @@ double AC::getAC_val(){  //姿勢制御の値返す関数
   dir = getnowdir();
 
   kkp = -dir;  //比例制御の値を計算
-  kkd = -((dir - dir_old) * time);  //微分制御の値を計算
-  
+  kkd = ((kkp - kkp_old) * time);  //微分制御の値を計算
+  kkp_old = kkp;
+
   kkp *= kp;
   kkd *= kd;
   if(150 < abs(kkp)){
@@ -19,28 +20,35 @@ double AC::getAC_val(){  //姿勢制御の値返す関数
   
   val = kkp + kkd;  //最終的に返す値を計算
   ac_timer.reset();
-  dir_old = dir;
 
   return val;  //値返す
 }
 
 
 
-float AC::getCam_val(float cam){
+float AC::getCam_val(float c_ang_){
   dir = getnowdir();
 
-  kkp = cam;
-  kkd = -((dir - dir_old) * time);  //微分制御の値を計算
+  c_ang = c_ang_;
+  kkp = -c_ang;  //比例制御の値を計算
+  kkd = ((kkp - kkp_old) * time);  //微分制御の値を計算
+  kkp_old = kkp;
 
   kkp *= kp;
   kkd *= kd;
+  if(150 < abs(kkp)){
+    kkp = (kkp < 0 ? -150 : 150);
+  }
   if(100 < abs(kkd)){
     kkd = (kkd < 0 ? -100 : 100);
   }
+  
+  val = kkp + kkd;  //最終的に返す値を計算
+  ac_timer.reset();
+  // Serial.print(" val : ");
+  // Serial.print(val);
 
-  dir_old = dir;
-  val = kkp - kkd;
-  return val;  //値返す 
+  return val;  //値返す
 }
 
 
@@ -82,5 +90,6 @@ void AC::setup_2(){
   bno.getEvent(&event);
 
   dir_target = event.orientation.x;
+  dir_n = event.orientation.x;
   this->first = dir_target;
 }
