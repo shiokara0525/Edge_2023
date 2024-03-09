@@ -13,6 +13,9 @@ LINE line;
 AC ac;
 motor_attack MOTOR;
 
+int Mval = 0;
+int avaliable[4] = {0,0,0,0};
+int Core2_send = 0;
 //======================================================neopiku======================================================//
 #define DELAYVAL 500
 #define PIN        30 
@@ -35,6 +38,15 @@ void Switch();
 
 void setup() {
   Serial.begin(9600);
+  Serial1.begin(115200);
+
+  Serial1.write(38);
+  Serial1.write(Mval);
+  for(int i = 0; i < 4; i++){
+    Serial1.write(avaliable[i]);
+  }
+  Serial1.write(37);
+
   ball.begin();
   line.begin();
   ac.setup();
@@ -72,6 +84,39 @@ void loop() {
   // Serial.print(" | ");
   Serial.println();
 
+  if(Core2_send == 1){
+    Serial1.write(38);
+    Serial1.write(uint8_t(ball.x_pos));
+    Serial1.write(uint8_t(ball.y_pos));
+    Serial1.write(ball.get_val);
+    Serial1.write(ball.ball_get);
+    Serial1.write(37);
+  }
+  else if(Core2_send == 2){
+    Serial1.write(38);
+    Serial1.write(line.data_byte[0]);
+    Serial1.write(line.data_byte[1]);
+    Serial1.write(line.data_byte[2]);
+    Serial1.write(line.data_byte[3]);
+    Serial1.write(37);
+  }
+  else if(Core2_send == 3){
+    Serial1.write(38);
+    Serial1.write(cam_front.data_byte[0]);
+    Serial1.write(cam_front.data_byte[1]);
+    Serial1.write(cam_front.data_byte[2]);
+    Serial1.write(cam_front.data_byte[3]);
+    Serial1.write(37);
+  }
+  else if(Core2_send == 4){
+    Serial1.write(38);
+    Serial1.write(cam_back.data_byte[0]);
+    Serial1.write(cam_back.data_byte[1]);
+    Serial1.write(cam_back.data_byte[2]);
+    Serial1.write(cam_back.data_byte[3]);
+    Serial1.write(37);
+  }
+
   if(toogle_f != digitalRead(toogle_P)){
     pixels.clear();
     MOTOR.motor_0();
@@ -97,85 +142,94 @@ void Switch(){
 
 
 
+void serialEvent1(){
+  uint8_t reBuf[4];
+  if(Serial1.available() < 4){
+    return;
+  }
+  for(int i = 0; i < 4; i++){
+    reBuf[i] = Serial1.read();
+  }
+  while(Serial1.available()){
+    Serial1.read();
+  }
+
+
+  if(reBuf[0] == 38 && reBuf[3] == 37){
+    if(reBuf[1] == 0){
+      Mval = reBuf[2];
+    }
+    for(int i = 1; i < 5; i++){
+      if(reBuf[1] == i){
+        avaliable[i - 1] = reBuf[2];
+      }
+    }
+    if(reBuf[1] == 5){
+      Core2_send = reBuf[2];
+    }
+  }
+}
+
+
+
 void serialEvent3(){
-  uint8_t reBuf[5];
-  if(Serial3.available() < 5){
+  // Serial.print("sawa1");
+  uint8_t reBuf[6];
+  if(Serial3.available() < 6){
     return;
   }
 
-  for(int i = 0; i < 5; i++){
+  for(int i = 0; i < 6; i++){
     reBuf[i] = Serial3.read();
   }
   while(Serial3.available()){
     Serial3.read();
   }
 
-  if(reBuf[0] == 38 && reBuf[4] == 37){
-    if(reBuf[3] == 0){
-      cam_back.on = 0;
-    }
-    else{
-      if(cam_back.color == reBuf[1]){
-        cam_back.on = 1;
-        cam_back.Size = reBuf[3];
-        cam_back.ang = -(reBuf[2] - 127);
-      }
-      else{
-        cam_back.on = 0;
-      }
+  if(reBuf[0] == 38 && reBuf[5] == 37){
+    for(int i = 0; i < 4; i++){
+      cam_back.data_byte[i] = reBuf[i+1];
     }
   }
 
-  for(int i = 0; i < 5; i++){
-    // Serial.print(reBuf[i]);
+  for(int i = 0; i < 6; i++){
     // Serial.print(" ");
+    // Serial.print(reBuf[i]);
   }
-  // Serial.println();
-  // Serial.print("sawa");
 }
 
 
 
 void serialEvent4(){
-  uint8_t reBuf[5];
-  if(Serial4.available() < 5){
+  // Serial.print("sawa2");
+  uint8_t reBuf[6];
+  if(Serial4.available() < 6){
     return;
   }
 
-  for(int i = 0; i < 5; i++){
+  for(int i = 0; i < 6; i++){
     reBuf[i] = Serial4.read();
   }
   while(Serial4.available()){
     Serial4.read();
   }
 
-  if(reBuf[0] == 38 && reBuf[4] == 37){
-    if(reBuf[3] == 0){
-      cam_front.on = 0;
-    }
-    else{
-      if(cam_front.color == reBuf[1]){
-        cam_front.on = 1;
-        cam_front.Size = reBuf[3];
-        cam_front.ang = -(reBuf[2] - 127);
-      }
-      else{
-        cam_front.on = 0;
-      }
+  if(reBuf[0] == 38 && reBuf[5] == 37){
+    for(int i = 0; i < 4; i++){
+      cam_front.data_byte[i] = reBuf[i+1];
     }
   }
-  for(int i = 0; i < 5; i++){
-    // Serial.print(reBuf[i]);
+
+  for(int i = 0; i < 6; i++){
     // Serial.print(" ");
+    // Serial.print(reBuf[i]);
   }
-  // Serial.println();
-  // Serial.print("sawa");
 }
 
 
 
 void serialEvent6(){
-  // Serial.print(" sawa ");
+  // Serial.println(" sawa3 ");
   uint8_t read[6];
   int n = 1;
   if(Serial6.available() < 6){
@@ -214,48 +268,63 @@ void serialEvent6(){
 
 
 void serialEvent8(){
+  // Serial.println("sawa4");
   int n;
   int x,y;
   word revBuf_word[7];
   byte revBuf_byte[7];
   //受信データ数が、一定時間同じであれば、受信完了としてデータ読み出しを開始処理を開始する。
   //受信データあり ※6バイト以上になるまでまつ
-  if(Serial8.available()>= 7){
+  if(Serial8.available() < 7){
+    // Serial.print(Serial8.available());
+    return;
+  }
+
+  revBuf_byte[0] = Serial8.read();
+  if(revBuf_byte[0] != 0xFF){
+    // Serial.print("!!!!!");
+    return;
+  }
     //---------------------------
     //受信データをバッファに格納
     //---------------------------
-    n = 0;
-    while(Serial8.available()>0 ){ //受信データがなくなるまで読み続ける
-      //6バイト目まではデータを格納、それ以上は不要なデータであるため捨てる。
-      if(n < 7){
-        revBuf_byte[n] = Serial8.read();   //revBuf_byte[n] = Serial2.read();
-      }
-      else{
-        Serial8.read(); //Serial2.read();  //読みだすのみで格納しない。
-      }
-      n++;
+    n = 1;
+  while(Serial8.available()>0 ){ //受信データがなくなるまで読み続ける
+    //6バイト目まではデータを格納、それ以上は不要なデータであるため捨てる。
+    if(n < 7){
+      revBuf_byte[n] = Serial8.read();   //revBuf_byte[n] = Serial2.read();
     }
+    else{
+      Serial8.read(); //Serial2.read();  //読みだすのみで格納しない。
+    }
+    n++;
+  }
+  // for(int i = 0; i < 7; i++){
+  //   Serial.print(revBuf_byte[i]);
+  //   Serial.print(" ");
+  // }
     //---------------------------
     //データの中身を確認
     //---------------------------
     //データの先頭、終了コードあることを確認
-    if((revBuf_byte[0] == 0xFF ) && ( revBuf_byte[6] == 0xAA )){
-    //いったんWORD型（16bitデータ）としてから、int16_tとする。
-      revBuf_word[0] = (uint16_t(revBuf_byte[1])<< 8);//上位8ビットをbyteから、Wordに型変換して格納　上位桁にするため8ビットシフト
-      revBuf_word[1] = uint16_t(revBuf_byte[2]);//下位8ビットをbyteから、Wordに型変換して格納      
-      x = int16_t(revBuf_word[0]|revBuf_word[1]);//上位8ビット、下位ビットを合成（ビットのORを取ることで格納する。）
-      // ※int ではなく　int16_t　にすることが必要。intだけだと、32ビットのintと解釈されマイナス値がマイナスとみなされなくなる、int16_tは、16ビット指定の整数型変換
-      revBuf_word[2] = (uint16_t(revBuf_byte[3])<< 8);//上位8ビットをbyteから、Wordに型変換して格納　上位桁にするため8ビットシフト
-      revBuf_word[3] = uint16_t(revBuf_byte[4]);//下位8ビットをbyteから、Wordに型変換して格納      
-      y = int16_t(revBuf_word[2]|revBuf_word[3]);//上位8ビット、下位ビットを合成（ビットのORを取ることで格納する。）
-      // ※int ではなく　int16_t　にすることが必要。intだけだと、32ビットのintと解釈されマイナス値がマイナスとみなされなくなる、int16_tは、16ビット指定の整数型変換
-      ball.get_resister(revBuf_byte[5]);
+  if((revBuf_byte[0] == 0xFF ) && ( revBuf_byte[6] == 0xAA )){
+  //いったんWORD型（16bitデータ）としてから、int16_tとする。
+    revBuf_word[0] = (uint16_t(revBuf_byte[1])<< 8);//上位8ビットをbyteから、Wordに型変換して格納　上位桁にするため8ビットシフト
+    revBuf_word[1] = uint16_t(revBuf_byte[2]);//下位8ビットをbyteから、Wordに型変換して格納      
+    x = int16_t(revBuf_word[0]|revBuf_word[1]);//上位8ビット、下位ビットを合成（ビットのORを取ることで格納する。）
+    // ※int ではなく　int16_t　にすることが必要。intだけだと、32ビットのintと解釈されマイナス値がマイナスとみなされなくなる、int16_tは、16ビット指定の整数型変換
+    revBuf_word[2] = (uint16_t(revBuf_byte[3])<< 8);//上位8ビットをbyteから、Wordに型変換して格納　上位桁にするため8ビットシフト
+    revBuf_word[3] = uint16_t(revBuf_byte[4]);//下位8ビットをbyteから、Wordに型変換して格納      
+    y = int16_t(revBuf_word[2]|revBuf_word[3]);//上位8ビット、下位ビットを合成（ビットのORを取ることで格納する。）
+    // ※int ではなく　int16_t　にすることが必要。intだけだと、32ビットのintと解釈されマイナス値がマイナスとみなされなくなる、int16_tは、16ビット指定の整数型変換
+    ball.get_resister(revBuf_byte[5]);
 
-      x = ball.ball_x.demandAve(x);
-      y = ball.ball_y.demandAve(y);
-    }
-    else{
-      // printf("ERR_REV");
-    }
+    x = ball.ball_x.demandAve(x);
+    y = ball.ball_y.demandAve(y);
+    // Serial.print("!!!!!!!!!!!!!");
   }
+  else{
+    // printf("ERR_REV");
+  }
+  
 }
