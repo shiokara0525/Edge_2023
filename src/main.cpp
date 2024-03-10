@@ -70,7 +70,7 @@ void loop() {
   // Serial.print(" | ");
   // cam_back.print();
   // Serial.print(" | ");
-  Serial.println();
+  // Serial.println();
 
   if(toogle_f != digitalRead(toogle_P)){
     pixels.clear();
@@ -98,80 +98,60 @@ void Switch(){
 
 
 void serialEvent3(){
-  uint8_t reBuf[5];
-  if(Serial3.available() < 5){
+  // Serial.print("sawa1");
+  uint8_t reBuf[6];
+  if(Serial3.available() < 6){
     return;
   }
 
-  for(int i = 0; i < 5; i++){
+  for(int i = 0; i < 6; i++){
     reBuf[i] = Serial3.read();
   }
   while(Serial3.available()){
     Serial3.read();
   }
 
-  if(reBuf[0] == 38 && reBuf[4] == 37){
-    if(reBuf[3] == 0){
-      cam_back.on = 0;
-    }
-    else{
-      if(cam_back.color == reBuf[1]){
-        cam_back.on = 1;
-        cam_back.Size = reBuf[3];
-        cam_back.ang = -(reBuf[2] - 127);
-      }
-      else{
-        cam_back.on = 0;
-      }
+  if(reBuf[0] == 38 && reBuf[5] == 37){
+    for(int i = 0; i < 4; i++){
+      cam_back.data_byte[i] = reBuf[i+1];
     }
   }
 
-  for(int i = 0; i < 5; i++){
-    // Serial.print(reBuf[i]);
-    // Serial.print(" ");
+  for(int i = 0; i < 6; i++){
+    Serial.print(" ");
+    Serial.print(reBuf[i]);
   }
-  // Serial.println();
-  // Serial.print("sawa");
+  Serial.println(" sawa1 ");
 }
 
 
 
 void serialEvent4(){
-  uint8_t reBuf[5];
-  if(Serial4.available() < 5){
+  // Serial.print("sawa2");
+  uint8_t reBuf[6];
+  if(Serial4.available() < 6){
     return;
   }
 
-  for(int i = 0; i < 5; i++){
+  for(int i = 0; i < 6; i++){
     reBuf[i] = Serial4.read();
   }
   while(Serial4.available()){
     Serial4.read();
   }
 
-  if(reBuf[0] == 38 && reBuf[4] == 37){
-    if(reBuf[3] == 0){
-      cam_front.on = 0;
-    }
-    else{
-      if(cam_front.color == reBuf[1]){
-        cam_front.on = 1;
-        cam_front.Size = reBuf[3];
-        cam_front.ang = -(reBuf[2] - 127);
-      }
-      else{
-        cam_front.on = 0;
-      }
+  if(reBuf[0] == 38 && reBuf[5] == 37){
+    for(int i = 0; i < 4; i++){
+      cam_front.data_byte[i] = reBuf[i+1];
     }
   }
-  for(int i = 0; i < 5; i++){
-    // Serial.print(reBuf[i]);
-    // Serial.print(" ");
-  }
-  // Serial.println();
-  // Serial.print("sawa");
-}
 
+  for(int i = 0; i < 6; i++){
+    Serial.print(" ");
+    Serial.print(reBuf[i]);
+  }
+  Serial.println(" sawa2 ");
+}
 
 
 void serialEvent6(){
