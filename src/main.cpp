@@ -63,7 +63,9 @@ void setup() {
     cam_front.color = 1;  //青が0 黄色が1
     cam_back.color = 0;  //青が0 黄色が1
   }
+  dribbler.stop();
   Switch();
+  dribbler.run();
 }
 
 void loop() {
@@ -82,6 +84,7 @@ void loop() {
   // Serial.print(" | ");
   Serial.println();
 
+  dribbler.run();
   if(1){
     delay(5000);
     kick();
@@ -92,7 +95,6 @@ void loop() {
     MOTOR.motor_0();
     dribbler.stop();
     Switch();
-    dribbler.run();
   }
 }
 
