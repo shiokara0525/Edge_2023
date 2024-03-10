@@ -61,10 +61,10 @@ void loop() {
     Serial.print(i);
     MOTOR.Moutput(i,0);
   }
-  // if(toogle_f != digitalRead(toogle_P)){
-  //   MOTOR.motor_0();
-  //   Switch();
-  // }
+  if(toogle_f != digitalRead(toogle_P)){
+    MOTOR.motor_0();
+    Switch();
+  }
   Serial.println();
 }
 
