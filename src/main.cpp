@@ -18,6 +18,9 @@ BLDC dribbler;
 
 //======================================================きっく======================================================//
 void kick();
+int Kick_F = 0;
+int kick_ = 0;
+timer kick_time;
 const int C = 32;
 const int K = 31;
 //======================================================neopiku======================================================//
@@ -85,9 +88,33 @@ void loop() {
   Serial.println();
 
   dribbler.run();
-  if(1){
-    delay(5000);
-    kick();
+  kick_ = 1;
+
+  if(kick_ == 1){
+    if(Kick_F == 0){
+      Kick_F = 1;
+      kick_time.reset();
+    }
+  }
+
+  if(Kick_F == 1){
+    if(kick_time.read_ms() < 10){
+      digitalWrite(C,LOW);
+    }
+    else if(kick_time.read_ms() < 60){
+      digitalWrite(K,HIGH);
+      digitalWrite(LED,HIGH);
+    }
+    else if(kick_time.read_ms() < 70){
+      digitalWrite(K,LOW);
+      digitalWrite(LED,LOW);
+    }
+    else if(kick_time.read_ms() < 5000){
+      digitalWrite(C,HIGH);
+    }
+    else{
+      Kick_F = 0;
+    }
   }
 
   if(toogle_f != digitalRead(toogle_P)){
