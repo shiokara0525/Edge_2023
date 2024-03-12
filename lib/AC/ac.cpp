@@ -29,7 +29,7 @@ double AC::getAC_val(){  //姿勢制御の値返す関数
 float AC::getCam_val(float cam){
   dir = getnowdir();
 
-  kkp = cam;
+  kkp = -cam;
   kkd = -((dir - dir_old) * time);  //微分制御の値を計算
 
   kkp *= kp;

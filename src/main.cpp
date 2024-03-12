@@ -23,7 +23,7 @@ int Neo_p = 999;
 
 Adafruit_NeoPixel pixels(DELAYVAL, PIN, NEO_GRB + NEO_KHZ800);
 //======================================================カメラ======================================================//
-int goal_color = 0;  //青が0 黄色が1
+int goal_color = 1;  //青が0 黄色が1
 Cam cam_front(4);
 Cam cam_back(3);
 //======================================================スタートスイッチ======================================================//
@@ -58,6 +58,12 @@ void loop() {
   line.getLINE_Vec();
   ball.getBallposition();
   ac.getAC_val();
+  cam_front.getCamdata();
+
+  float AC_val = ac.getCam_val(cam_front.ang);
+  angle go_ang(0,true);
+
+  // Serial.print(" | ");
   // ball.print();
   // Serial.print(" | ");
   // line.print();
@@ -65,12 +71,16 @@ void loop() {
   // line.print_2();
   // Serial.print(" | ");
   // ac.print();
-  // Serial.print(" | ");
-  // cam_front.print();
-  // Serial.print(" | ");
+  Serial.print(" | ");
+  cam_front.print();
+  Serial.print(" | AC_val : ");
+  Serial.print(AC_val);
   // cam_back.print();
   // Serial.print(" | ");
-  // Serial.println();
+  Serial.println();
+
+
+  MOTOR.moveMotor_0(go_ang,120,AC_val,0);
 
   if(toogle_f != digitalRead(toogle_P)){
     pixels.clear();
@@ -117,11 +127,11 @@ void serialEvent3(){
     }
   }
 
-  for(int i = 0; i < 6; i++){
-    Serial.print(" ");
-    Serial.print(reBuf[i]);
-  }
-  Serial.println(" sawa1 ");
+  // for(int i = 0; i < 6; i++){
+  //   Serial.print(" ");
+  //   Serial.print(reBuf[i]);
+  // }
+  // Serial.println(" sawa1 ");
 }
 
 
@@ -146,11 +156,11 @@ void serialEvent4(){
     }
   }
 
-  for(int i = 0; i < 6; i++){
-    Serial.print(" ");
-    Serial.print(reBuf[i]);
-  }
-  Serial.println(" sawa2 ");
+  // for(int i = 0; i < 6; i++){
+  //   Serial.print(" ");
+  //   Serial.print(reBuf[i]);
+  // }
+  // Serial.println(" sawa2 ");
 }
 
 
