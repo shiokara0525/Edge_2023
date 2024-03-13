@@ -8,6 +8,7 @@
 #include<timer.h>
 #include<Cam.h>
 #include<BLDC.h>
+#include<kicker.h>
 
 
 BALL ball;
@@ -16,13 +17,10 @@ AC ac;
 motor_attack MOTOR;
 BLDC dribbler;
 
+int print_flag = 1;
+
 //======================================================きっく======================================================//
-void kick();
-int Kick_F = 0;
-int kick_ = 0;
-timer kick_time;
-const int C = 32;
-const int K = 31;
+Kicker kick;
 //======================================================neopiku======================================================//
 #define DELAYVAL 500
 #define PIN        30 
@@ -54,10 +52,7 @@ void setup() {
   pixels.begin();
   pixels.clear();
   pinMode(LED,OUTPUT);
-  pinMode(K,OUTPUT);
-  pinMode(C,OUTPUT);
-  digitalWrite(C,HIGH);
-  digitalWrite(K,LOW);
+
   if(goal_color == 0){
     cam_front.color = 0;  //青が0 黄色が1
     cam_back.color = 1;  //青が0 黄色が1
@@ -75,46 +70,26 @@ void loop() {
   line.getLINE_Vec();
   ball.getBallposition();
   ac.getAC_val();
-  // ball.print();
-  // Serial.print(" | ");
-  // line.print();
-  // Serial.print(" | ");
-  // ac.print();
-  // Serial.print(" | ");
-  // cam_front.print();
-  // Serial.print(" | ");
-  // cam_back.print();
-  // Serial.print(" | ");
-  Serial.println();
+
+  int kick_ = 0;
 
   dribbler.run();
   kick_ = 1;
 
-  if(kick_ == 1){
-    if(Kick_F == 0){
-      Kick_F = 1;
-      kick_time.reset();
-    }
-  }
+  kick.run(kick_);
 
-  if(Kick_F == 1){
-    if(kick_time.read_ms() < 10){
-      digitalWrite(C,LOW);
-    }
-    else if(kick_time.read_ms() < 60){
-      digitalWrite(K,HIGH);
-      digitalWrite(LED,HIGH);
-    }
-    else if(kick_time.read_ms() < 70){
-      digitalWrite(K,LOW);
-      digitalWrite(LED,LOW);
-    }
-    else if(kick_time.read_ms() < 5000){
-      digitalWrite(C,HIGH);
-    }
-    else{
-      Kick_F = 0;
-    }
+  if(print_flag == 1){
+    // ball.print();
+    // Serial.print(" | ");
+    // line.print();
+    // Serial.print(" | ");
+    // ac.print();
+    // Serial.print(" | ");
+    // cam_front.print();
+    // Serial.print(" | ");
+    // cam_back.print();
+    // Serial.print(" | ");
+    Serial.println();
   }
 
   if(toogle_f != digitalRead(toogle_P)){
@@ -141,21 +116,6 @@ void Switch(){
   toogle_f = digitalRead(toogle_P);  //トグルがもげちゃったからいったんLチカでスタート
 }
 
-
-
-void kick(){
-  // esc.writeMicroseconds(1000);
-  digitalWrite(C,LOW);
-  delay(10);
-  digitalWrite(K,HIGH);
-  digitalWrite(LED,HIGH);
-  delay(50);
-  digitalWrite(K,LOW);
-  digitalWrite(LED,LOW);
-  delay(10);
-  digitalWrite(C,HIGH);
-  // MOTOR.Moutput(4,-200);
-}
 
 
 
