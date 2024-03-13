@@ -61,10 +61,11 @@ void loop() {
   ball.getBallposition();
   ac.getAC_val();
   cam_front.getCamdata();
-  ac.getCam_val(cam_front.ang);
   angle go_ang(0,true);
+  float AC_val = ac.getCam_val(cam_front.ang);
 
-  // MOTOR.moveMotor_0(go_ang,120,AC_val,0);
+
+  MOTOR.moveMotor_0(go_ang,120,0,0);
 
   if(print_flag == 1){
     Serial.print(" | ");
