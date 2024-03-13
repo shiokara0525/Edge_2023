@@ -62,10 +62,10 @@ void loop() {
   ac.getAC_val();
   cam_front.getCamdata();
   angle go_ang(0,true);
-  float AC_val = ac.getCam_val(cam_front.ang);
+  float AC_val = ac.getAC_val();
 
 
-  MOTOR.moveMotor_0(go_ang,120,0,0);
+  // MOTOR.moveMotor_0(go_ang,120,0,0);
 
   if(print_flag == 1){
     Serial.print(" | ");
@@ -74,8 +74,8 @@ void loop() {
     // line.print();
     // Serial.print(" | ");
     // line.print_2();
-    Serial.print(" | ");
-    ac.print();
+    // Serial.print(" | ");
+    // ac.print();
     // Serial.print(" | ");
     // cam_front.print();
     // Serial.print(" | AC_val : ");
