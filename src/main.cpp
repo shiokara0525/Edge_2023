@@ -13,6 +13,8 @@ LINE line;
 AC ac;
 motor_attack MOTOR;
 
+int print_flag = 1;
+
 //======================================================neopiku======================================================//
 #define DELAYVAL 500
 #define PIN        30 
@@ -59,28 +61,28 @@ void loop() {
   ball.getBallposition();
   ac.getAC_val();
   cam_front.getCamdata();
-
   float AC_val = ac.getCam_val(cam_front.ang);
   angle go_ang(0,true);
 
-  // Serial.print(" | ");
-  // ball.print();
-  // Serial.print(" | ");
-  // line.print();
-  // Serial.print(" | ");
-  // line.print_2();
-  // Serial.print(" | ");
-  // ac.print();
-  Serial.print(" | ");
-  cam_front.print();
-  Serial.print(" | AC_val : ");
-  Serial.print(AC_val);
-  // cam_back.print();
-  // Serial.print(" | ");
-  Serial.println();
-
-
   MOTOR.moveMotor_0(go_ang,120,AC_val,0);
+
+  if(print_flag == 1){
+    // Serial.print(" | ");
+    // ball.print();
+    // Serial.print(" | ");
+    // line.print();
+    // Serial.print(" | ");
+    // line.print_2();
+    // Serial.print(" | ");
+    // ac.print();
+    Serial.print(" | ");
+    cam_front.print();
+    Serial.print(" | AC_val : ");
+    Serial.print(AC_val);
+    // cam_back.print();
+    // Serial.print(" | ");
+    Serial.println();
+  }
 
   if(toogle_f != digitalRead(toogle_P)){
     pixels.clear();
