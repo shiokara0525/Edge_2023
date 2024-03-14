@@ -2,6 +2,7 @@
 
 int count = 0;
 int avaliable[4] = {0,1,2,3};
+int M_val = 0;
 
 void setup(){
   Serial.begin(9600);
@@ -11,6 +12,14 @@ void setup(){
   for(int i = 0; i < 4; i++){
     Serial7.write(avaliable[i]);
   }
+  Serial7.write(37);
+  delay(100);
+  Serial7.write(38);
+  Serial7.write(1);
+  Serial7.write(M_val);
+  Serial7.write(0);
+  Serial7.write(0);
+  Serial7.write(0);
   Serial7.write(37);
 }
 
@@ -42,6 +51,9 @@ void serialEvent7(){
       }
     }
     if(read[1] == 1){
+      M_val = read[2];
+      Serial.print(" ");
+      Serial.print(M_val);
     }
   }
   // for(int i = 0; i < 7; i++){
