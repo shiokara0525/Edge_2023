@@ -61,6 +61,7 @@ void loop() {
   ball.getBallposition();
   ac.getAC_val();
   cam_front.getCamdata();
+  cam_back.getCamdata();
   angle go_ang(0,true);
   float AC_val = ac.getAC_val();
 
@@ -232,14 +233,14 @@ void serialEvent8(){
     contain[3] = (uint16_t(read[4]));
     y = int16_t(contain[2] | contain[3]);
     ball.ball_x.demandAve(x);
-    ball.ball_x.demandAve(y);
+    ball.ball_y.demandAve(y);
     ball.get_resister_1(read[5]);
     ball.get_resister_2(read[6]);
   }
 
-  for(int i = 0; i < 8; i++){
-    Serial.print(" ");
-    Serial.print(read[i]);
-  }
-  Serial.println();
+  // for(int i = 0; i < 8; i++){
+  //   Serial.print(" ");
+  //   Serial.print(read[i]);
+  // }
+  // Serial.println();
 }
