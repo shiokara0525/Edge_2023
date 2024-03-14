@@ -32,7 +32,7 @@ void serialEvent7(){
   }
 
   if(read[0] == 38 && read[6] == 37){
-    if(read[1] == 1){
+    if(read[1] == 0){
       for(int i = 0; i < 4; i++){
         avaliable[i] = read[i+2];
       }
