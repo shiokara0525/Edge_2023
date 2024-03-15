@@ -2,6 +2,7 @@
 #include<ball.h>
 #include<line.h>
 #include<Cam.h>
+#include<EEPROM.h>
 
 #define send_lenth 7
 
@@ -15,8 +16,19 @@ int avaliable[4] = {0,1,2,3};
 int M_val = 0;
 int goal_color = 0;
 int Mode = 0;
+int Mode_B = 999;
 
 void setup(){
+  int address = 0x00;
+  EEPROM.begin();
+  M_val = EEPROM.read(address);
+  address++;
+  for(int i = 0; i < 4; i++){
+    avaliable[i] = EEPROM.read(address);
+    address++;
+  }
+  goal_color = EEPROM.read(address);
+
   ball.begin();
   line.begin();
   cam_front.begin();
@@ -48,12 +60,21 @@ void setup(){
 }
 
 void loop(){
+  int Flag = 0;
   uint8_t send[send_lenth] = {38,0,0,0,0,0,37};
   int send_flag = 0;
 
   if(Mode == 0){
+    if(Mode != Mode_B){
+      Mode_B = Mode;
+      Flag = 1;
+    }
   }
   else if(Mode == 1){
+    if(Mode != Mode_B){
+      Mode_B = Mode;
+      Flag = 1;
+    }
     Serial.print(" | ");
     ball.print();
     Serial.print(" | ");
@@ -62,6 +83,10 @@ void loop(){
     cam_front.print();
   }
   else if(Mode == 4){
+    if(Mode != Mode_B){
+      Mode_B = Mode;
+      Flag = 1;
+    }
     send[1] = 4;
     send[2] = ball.x_pos;
     send[3] = ball.y_pos;
@@ -70,6 +95,10 @@ void loop(){
     send_flag = 1;
   }
   else if(Mode == 5){
+    if(Mode != Mode_B){
+      Mode_B = Mode;
+      Flag = 1;
+    }
     send[1] = 5;
     send[2] = line.data_byte[0];
     send[3] = line.data_byte[1];
@@ -78,12 +107,27 @@ void loop(){
     send_flag = 1;
   }
   else if(Mode == 6){
+    if(Mode != Mode_B){
+      Mode_B = Mode;
+      Flag = 1;
+    }
     send[1] = 6;
     send[2] = cam_front.data_byte[0];
     send[3] = cam_front.data_byte[1];
     send[4] = cam_front.data_byte[2];
     send[5] = cam_front.data_byte[3];
     send_flag = 1;
+  }
+
+  if(Flag == 1){
+    int address = 0;
+    EEPROM.update(address,M_val);
+    for(int i = 0; i < 4; i++){
+      address++;
+      EEPROM.update(address,avaliable[i]);
+    }
+    address++;
+    EEPROM.update(address,goal_color);
   }
 
   if(send_flag == 1){
