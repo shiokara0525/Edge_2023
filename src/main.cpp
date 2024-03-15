@@ -21,6 +21,7 @@ int print_flag = 1;
 
 //======================================================きっく======================================================//
 Kicker kick;
+timer kick_t;
 //======================================================neopiku======================================================//
 #define DELAYVAL 500
 #define PIN        30 
@@ -48,9 +49,11 @@ void setup() {
   ac.setup();
   cam_front.begin();
   cam_back.begin();
-  dribbler.setup();
+  // dribbler.setup();
   pixels.begin();
   pixels.clear();
+  // kick.setup();
+  delay(500);
   pinMode(LED,OUTPUT);
 
   if(goal_color == 0){
@@ -61,9 +64,8 @@ void setup() {
     cam_front.color = 1;  //青が0 黄色が1
     cam_back.color = 0;  //青が0 黄色が1
   }
-  dribbler.stop();
   Switch();
-  dribbler.run();
+  kick_t.reset();
 }
 
 void loop() {
@@ -73,10 +75,14 @@ void loop() {
 
   int kick_ = 0;
 
-  dribbler.run();
-  kick_ = 1;
-
+  // dribbler.run();
+  if(1000 < kick_t.read_ms()){
+    kick_ = 1;
+    kick_t.reset();
+  }
   kick.run(kick_);
+  Serial.print(" timer : ");
+  Serial.print(kick_t.read_ms());
 
   if(print_flag == 1){
     // ball.print();
@@ -93,9 +99,10 @@ void loop() {
   }
 
   if(toogle_f != digitalRead(toogle_P)){
+    kick_t.reset();
     pixels.clear();
     MOTOR.motor_0();
-    dribbler.stop();
+    // dribbler.stop();
     Switch();
   }
 }
@@ -186,10 +193,10 @@ void serialEvent4(){
       }
     }
   }
-  for(int i = 0; i < 5; i++){
-    Serial.print(reBuf[i]);
-    Serial.print(" ");
-  }
+  // for(int i = 0; i < 5; i++){
+  //   Serial.print(reBuf[i]);
+  //   Serial.print(" ");
+  // }
   // Serial.println();
   // Serial.print("sawa");
 }

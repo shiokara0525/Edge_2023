@@ -10,9 +10,11 @@ void Kicker::setup(){
 
 
 int Kicker::run(int F){
+    Serial.print(" kick_flag : ");
+    Serial.print(kick_flag);
     if(F == 1 && kick_flag == 0){
         kick_time.reset();
-        kick_flag == 1;
+        kick_flag = 1;
     }
 
     if(kick_flag == 1){
@@ -34,6 +36,7 @@ int Kicker::run(int F){
             kick_flag = 0;
         }
     }
+    return kick_flag;
 }
 
 
@@ -43,4 +46,5 @@ int Kicker::stop(){
     digitalWrite(C,HIGH);
     kick_flag = 0;
     kick_time.reset();
+    return kick_flag;
 }
