@@ -2,7 +2,6 @@
 #include<ball.h>
 #include<line.h>
 #include<Cam.h>
-#include<EEPROM.h>
 
 #define send_lenth 7
 
@@ -11,55 +10,23 @@ LINE line;
 Cam cam_front(4);
 Cam cam_back(3);
 
-int count = 0;
-int avaliable[4] = {0,1,2,3};
-int M_val = 0;
-int goal_color = 0;
 int Mode = 0;
 int Mode_B = 999;
+int avaliable[4];
+int M_val;
 
 void setup(){
-  int address = 0x00;
-  EEPROM.begin();
-  M_val = EEPROM.read(address);
-  address++;
-  for(int i = 0; i < 4; i++){
-    avaliable[i] = EEPROM.read(address);
-    address++;
-  }
-  goal_color = EEPROM.read(address);
-
   ball.begin();
   line.begin();
   cam_front.begin();
   Serial.begin(9600);
   Serial7.begin(9600);
-  Serial7.write(38);
-  Serial7.write(0);
-  Serial7.write(avaliable[0]);
-  Serial7.write(avaliable[1]);
-  Serial7.write(avaliable[2]);
-  Serial7.write(avaliable[3]);
-  Serial7.write(37);
-  delay(100);
-  Serial7.write(38);
-  Serial7.write(1);
-  Serial7.write(M_val);
-  Serial7.write(0);
-  Serial7.write(0);
-  Serial7.write(0);
-  Serial7.write(37);
-  delay(100);
-  Serial7.write(38);
-  Serial7.write(2);
-  Serial7.write(goal_color);
-  Serial7.write(0);
-  Serial7.write(0);
-  Serial7.write(0);
-  Serial7.write(37);
 }
 
 void loop(){
+  ball.getBallposition();
+  line.getLINE_Vec();
+  cam_front.getCamdata();
   int Flag = 0;
   uint8_t send[send_lenth] = {38,0,0,0,0,0,37};
   int send_flag = 0;
@@ -78,9 +45,10 @@ void loop(){
     Serial.print(" | ");
     ball.print();
     Serial.print(" | ");
-    line.print();
-    Serial.print(" | ");
-    cam_front.print();
+    // line.print();
+    // Serial.print(" | ");
+    // cam_front.print();
+    Serial.println();
   }
   else if(Mode == 4){
     if(Mode != Mode_B){
@@ -119,21 +87,9 @@ void loop(){
     send_flag = 1;
   }
 
-  if(Flag == 1){
-    int address = 0;
-    EEPROM.update(address,M_val);
-    for(int i = 0; i < 4; i++){
-      address++;
-      EEPROM.update(address,avaliable[i]);
-    }
-    address++;
-    EEPROM.update(address,goal_color);
-  }
-
   if(send_flag == 1){
     Serial7.write(send,send_lenth);
   }
-  Serial.println();
 }
 
 void serialEvent7(){
@@ -205,7 +161,6 @@ void serialEvent7(){
   // }
   Serial.println();
 }
-
 
 
 void serialEvent3(){
