@@ -70,7 +70,15 @@ void serialEvent7(){
       Serial.print(goal[read[2]]);
     }
     if(read[1] == 3){
-      Serial.print(" enter !!!!");
+      if(read[2] == 1){
+        Serial.print(" enter !!!!");
+      }
+      else if(read[2] == 2){
+        Serial.print(" start!!!! ");
+      }
+      else if(read[2] == 0){
+        Serial.print(" finish!!!! ");
+      }
     }
   }
   // for(int i = 0; i < 7; i++){
