@@ -3,6 +3,8 @@
 int count = 0;
 int avaliable[4] = {0,1,2,3};
 int M_val = 0;
+int goal_color = 0;
+char *goal[2] = {"Yellow","Blue"};
 
 void setup(){
   Serial.begin(9600);
@@ -17,6 +19,14 @@ void setup(){
   Serial7.write(38);
   Serial7.write(1);
   Serial7.write(M_val);
+  Serial7.write(0);
+  Serial7.write(0);
+  Serial7.write(0);
+  Serial7.write(37);
+  delay(100);
+  Serial7.write(38);
+  Serial7.write(2);
+  Serial7.write(goal_color);
   Serial7.write(0);
   Serial7.write(0);
   Serial7.write(0);
@@ -54,6 +64,10 @@ void serialEvent7(){
       M_val = read[2];
       Serial.print(" ");
       Serial.print(M_val);
+    }
+    if(read[1] == 2){
+      Serial.print(" color : ");
+      Serial.print(goal[read[2]]);
     }
   }
   // for(int i = 0; i < 7; i++){
