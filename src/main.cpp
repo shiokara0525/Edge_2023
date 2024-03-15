@@ -69,6 +69,9 @@ void serialEvent7(){
       Serial.print(" color : ");
       Serial.print(goal[read[2]]);
     }
+    if(read[1] == 3){
+      Serial.print(" enter !!!!");
+    }
   }
   // for(int i = 0; i < 7; i++){
   //   Serial.print(" ");
