@@ -14,7 +14,6 @@ int count = 0;
 int avaliable[4] = {0,1,2,3};
 int M_val = 0;
 int goal_color = 0;
-char *goal[2] = {"Yellow","Blue"};
 int Mode = 0;
 
 void setup(){
@@ -72,10 +71,10 @@ void loop(){
   }
   else if(Mode == 5){
     send[1] = 5;
-    send[2] = line.data_byte[1];
-    send[3] = line.data_byte[2];
-    send[4] = line.data_byte[3];
-    send[5] = line.data_byte[4];
+    send[2] = line.data_byte[0];
+    send[3] = line.data_byte[1];
+    send[4] = line.data_byte[2];
+    send[5] = line.data_byte[3];
     send_flag = 1;
   }
   else if(Mode == 6){
@@ -123,7 +122,12 @@ void serialEvent7(){
     }
     if(read[1] == 2){
       Serial.print(" color : ");
-      Serial.print(goal[read[2]]);
+      if(read[2] == 0){
+        Serial.print("Yellow");
+      }
+      else{
+        Serial.print("Blue");
+      }
     }
     if(read[1] == 3){
       if(read[2] == 1){
