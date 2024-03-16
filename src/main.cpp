@@ -62,7 +62,11 @@ void loop() {
   //   MOTOR.Moutput(i,0);
   // }
   angle go_ang(0,true);
-  MOTOR.moveMotor_0(go_ang,120,0,0);
+  // MOTOR.moveMotor_0(go_ang,120,0,0);
+  MOTOR.motor_ac(200);
+  delay(1000);
+  MOTOR.motor_ac(-200);
+  delay(1000);
   if(toogle_f != digitalRead(toogle_P)){
     MOTOR.motor_0();
     Switch();

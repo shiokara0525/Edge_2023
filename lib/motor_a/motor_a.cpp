@@ -104,14 +104,14 @@ void motor_attack::moveMotor_0(angle ang,int val,double ac_val,int flag){
 
 
 void motor_attack::motor_ac(float ac_val){
-  for(int i = 0; i < 4; i++){
+  for(int i = 0; i < 5; i++){
     Moutput(i,ac_val);
   }
 }
 
 
 void motor_attack::motor_0(){  //モーターの値を0にする関数
-  for(int i = 0; i < 4; i++){
+  for(int i = 0; i < 5; i++){
     Moutput(i,0);
   }
 }
