@@ -7,13 +7,17 @@
 #include<MA.h>
 #include<timer.h>
 #include<Cam.h>
+#include<BLDC.h>
 
 BALL ball;
 LINE line;
 AC ac;
 motor_attack MOTOR;
+BLDC dribbler;
 
 int print_flag = 1;
+int macau_flag = 0;
+timer macau_t;
 
 //======================================================neopiku======================================================//
 #define DELAYVAL 500
@@ -44,6 +48,9 @@ void setup() {
   cam_back.begin();
   pixels.begin();
   pixels.clear();
+  dribbler.setup();
+  dribbler.run();
+  delay(200);
   pinMode(LED,OUTPUT);
   if(goal_color == 0){
     cam_front.color = 0;  //青が0 黄色が1
@@ -53,6 +60,7 @@ void setup() {
     cam_front.color = 1;  //青が0 黄色が1
     cam_back.color = 0;  //青が0 黄色が1
   }
+  dribbler.stop();
   Switch();
 }
 
@@ -64,9 +72,39 @@ void loop() {
   cam_back.getCamdata();
   angle go_ang(0,true);
   float AC_val = ac.getAC_val();
+  // int Target_dir = ac.dir_target;
 
 
   // MOTOR.moveMotor_0(go_ang,120,0,0);
+  dribbler.run();
+  // if(macau_flag == 0){
+  //   MOTOR.motor_ac(AC_val);
+  //   if(1000 < macau_t.read_ms()){
+  //     macau_flag = 1;
+  //   }
+  // }
+  // if(macau_flag == 1){
+  //   MOTOR.motor_ac(100);
+  //   if(170 < abs(ac.dir)){
+  //     macau_flag = 2;
+  //   }
+  // }
+  // else if(macau_flag == 2){
+  //   MOTOR.motor_ac(150);
+  //   if(40 < abs(ac.dir) && abs(ac.dir) < 50){
+  //     macau_flag = 3;
+  //   }
+  // }
+  // else if(macau_flag == 3){
+  //   if(macau_t.read_ms() < 300){
+  //     MOTOR.motor_0();
+  //   }
+  //   else{
+  //     macau_flag = 0;
+  //     macau_t.reset();
+  //   }
+  // }
+
 
   if(print_flag == 1){
     Serial.print(" | ");
@@ -88,6 +126,7 @@ void loop() {
 
   if(toogle_f != digitalRead(toogle_P)){
     pixels.clear();
+    dribbler.stop();
     MOTOR.motor_0();
     Switch();
   }
