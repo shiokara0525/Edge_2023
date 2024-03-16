@@ -52,10 +52,9 @@ void setup() {
   // dribbler.setup();
   pixels.begin();
   pixels.clear();
-  // kick.setup();
-  delay(500);
+  kick.setup();
   pinMode(LED,OUTPUT);
-
+  digitalWrite(LED,HIGH);
   if(goal_color == 0){
     cam_front.color = 0;  //青が0 黄色が1
     cam_back.color = 1;  //青が0 黄色が1
@@ -64,8 +63,9 @@ void setup() {
     cam_front.color = 1;  //青が0 黄色が1
     cam_back.color = 0;  //青が0 黄色が1
   }
+  // dribbler.stop();
   Switch();
-  kick_t.reset();
+  // dribbler.run();
 }
 
 void loop() {
