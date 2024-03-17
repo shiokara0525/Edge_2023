@@ -43,7 +43,7 @@ class oled_attack{
     unsigned int address = 0x00;  //EEPROMのアドレス
     int toogle = 0;  //トグルスイッチの値を記録（トグルを引くときに使う）
     int goDir;  //loop関数ないしか使えないangle go_ang.degressの値をぶち込んでグローバルに使うために作った税
-    oled_attack();
+    void setup();
     void OLED();
     int Button_selectCF = 0;  //コートの方向を決めるときに特殊なことをするので、セレクト変数を変えときますぜよ
 

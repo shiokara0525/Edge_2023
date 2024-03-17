@@ -1,6 +1,6 @@
 #include<OLED_a.h>
 
-oled_attack::oled_attack(){
+void oled_attack::setup(){
   EEPROM.get(address,line.LINE_Level);//EEPROMから読み出し
   address += sizeof(line.LINE_Level);  //アドレスを次の変数のアドレスにする
   EEPROM.get(address,RA_size);//EEPROMから読み出し(前回取り出した変数からアドレスを取得し、次のアドレスをここで入力する)
