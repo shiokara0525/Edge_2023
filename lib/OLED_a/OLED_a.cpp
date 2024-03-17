@@ -53,6 +53,7 @@ void oled_attack::OLED() {
   MOTOR.NoneM_flag = 0;  //モーター動作ありのフラグ
   
   while(1){
+    Serial.print("start!!!!");
     if(timer_OLED.read_ms() > 500) //0.5秒ごとに実行(OLEDにかかれてある文字を点滅させるときにこの周期で点滅させる)
     {
       if(flash_OLED == 0){
@@ -67,15 +68,19 @@ void oled_attack::OLED() {
 
     if(A_OLED == 0)  //メインメニュー
     {
+      Serial.print(" A_OLED=0 start ");
       if(A_OLED != B_OLED)  //ステートが変わったときのみ実行(初期化)
       {
         OLED_select = 1;  //選択画面をデフォルトにする
         B_OLED = A_OLED;
       }
+      Serial.print(" Cat ");
 
       //OLEDの初期化
       display.display();
+      Serial.print(" Cat0.5 ");
       display.clearDisplay();
+      Serial.print(" Cat1 ");
 
       //選択画面だということをしらせる言葉を表示
       display.setTextSize(1);
@@ -87,10 +92,12 @@ void oled_attack::OLED() {
 
       //文字と選択画面の境目の横線を表示
       display.drawLine(0, 21, 128, 21, WHITE);
+      Serial.print(" select start ");
 
       //選択画面の表示
       if(OLED_select == 1)  //STARTを選択しているとき
       {
+        Serial.print(" select=0 start ");
         //START値を調整
         display.setTextSize(2);
         if(flash_OLED == 0){  //白黒反転　何秒かの周期で白黒が変化するようにタイマーを使っている（flash_OLEDについて調べたらわかる）
@@ -123,6 +130,7 @@ void oled_attack::OLED() {
             aa = 0;
           }
         }
+        Serial.print(" select=1 end ");
       }
       else if(OLED_select == 2)  //Set Motarを選択しているとき
       {
@@ -344,6 +352,7 @@ void oled_attack::OLED() {
           }
         }
       }
+      Serial.print("A_OLED=0 end");
     }
     else if(A_OLED == 10)  //START
     { //機体の中心となるコート上での0°の位置を決めるところ
@@ -998,117 +1007,130 @@ void oled_attack::OLED() {
     }
 
     //ロータリーエンコーダーの値を取得し制御する
+    Serial.print("toogle = ");
+    Serial.print(digitalRead(Toggle_Switch));
+    Serial.print(" Tact = ");
+    Serial.print(digitalRead(Tact_Switch));
+    Serial.print(" Encoder = ");
+    Serial.print(myEnc.read());
+    Serial.println();
     long newPosition = myEnc.read();
-    if (newPosition != oldPosition) {
-      oldPosition = newPosition;
-      if(newPosition % 4 == 0)  //4の倍数のときのみ実行
-      {
-        new_encVal = newPosition / 4;  //Aにステートを代入
-        if(A_OLED == 0)  //選択画面にいるときはOLED_selectを変更する
-        {
-          if(new_encVal > old_encVal)  //回転方向を判定
-          {
-            OLED_select++;  //次の画面へ
-            if(OLED_select > 7)  //選択画面の数以上になったら1に戻す
-            {
-              OLED_select = 1;
-            }
-          }
-        }
-        else if(A_OLED == 10)  //スタート画面にいるときはButton_selectを変更する
-        {
-          if(new_encVal > old_encVal)  //回転方向を判定
-          {
-            Button_select = 0;  //next
-          }
-          else if(new_encVal < old_encVal)
-          {
-            Button_select = 1;  //exit
-          }
-        }
-        else if(A_OLED == 12)
-        {
-          if(new_encVal > old_encVal)  //回転方向を判定
-          {
-            if(Button_selectCF < 2){
-              Button_selectCF++;  //next
-            }
-          }
-          else if(new_encVal < old_encVal)
-          {
-            if(Button_selectCF  > 0){
-              Button_selectCF--;  //next
-            }
-          }
-        }
-        else if(A_OLED == 15)
-        {
-          if(new_encVal > old_encVal)  //回転方向を判定
-          {
-            if(Button_select < 2){
-              Button_select++;  //next
-            }
-          }
-          else if(new_encVal < old_encVal)
-          {
-            if(Button_select  > 0){
-              Button_select--;  //next
-            }
-          }
-        }
-        else if(A_OLED == 20)  //ラインの閾値を変更する
-        {
-          if(new_encVal > old_encVal)  //回転方向を判定
-          {
-            if(line.LINE_Level < 1023)
-            {
-              line.LINE_Level++;
-            }
-          }
-          else if(new_encVal < old_encVal)
-          {
-            if(line.LINE_Level > 0)
-            {
-              line.LINE_Level--;
-            }
-          }
-        }
-        else if(A_OLED == 40)  //ボールの閾値を変更する
-        {
-          if(new_encVal > old_encVal)  //回転方向を判定
-          {
-            if(RA_size < 1023)
-            {
-              RA_size++;
-            }
-          }
-          else if(new_encVal < old_encVal)
-          {
-            if(RA_size > 0)
-            {
-              RA_size--;
-            }
-          }
-        }
-        else if(A_OLED == 60)  //モーターの出力を変更する
-        {
-          if(new_encVal > old_encVal)  //回転方向を判定
-          {
-            if(val_max < 1023)
-            {
-              val_max++;
-            }
-          }
-          else if(new_encVal < old_encVal)
-          {
-            if(val_max > 0)
-            {
-              val_max--;
-            }
-          }
-        }
-        old_encVal = new_encVal;
-      }
+    if(digitalRead(toogle) != toogle){
+      OLED_select++;
     }
+    // if (newPosition != oldPosition) {
+    //   Serial.print("!!!!!!!!!!");
+    //   oldPosition = newPosition;
+    //   if(newPosition % 4 == 0)  //4の倍数のときのみ実行
+    //   {
+    //     Serial.print(" change!!!!!! ");
+    //     new_encVal = newPosition / 4;  //Aにステートを代入
+    //     if(A_OLED == 0)  //選択画面にいるときはOLED_selectを変更する
+    //     {
+    //       if(new_encVal > old_encVal)  //回転方向を判定
+    //       {
+    //         OLED_select++;  //次の画面へ
+    //         if(OLED_select > 7)  //選択画面の数以上になったら1に戻す
+    //         {
+    //           OLED_select = 1;
+    //         }
+    //       }
+    //     }
+    //     else if(A_OLED == 10)  //スタート画面にいるときはButton_selectを変更する
+    //     {
+    //       if(new_encVal > old_encVal)  //回転方向を判定
+    //       {
+    //         Button_select = 0;  //next
+    //       }
+    //       else if(new_encVal < old_encVal)
+    //       {
+    //         Button_select = 1;  //exit
+    //       }
+    //     }
+    //     else if(A_OLED == 12)
+    //     {
+    //       if(new_encVal > old_encVal)  //回転方向を判定
+    //       {
+    //         if(Button_selectCF < 2){
+    //           Button_selectCF++;  //next
+    //         }
+    //       }
+    //       else if(new_encVal < old_encVal)
+    //       {
+    //         if(Button_selectCF  > 0){
+    //           Button_selectCF--;  //next
+    //         }
+    //       }
+    //     }
+    //     else if(A_OLED == 15)
+    //     {
+    //       if(new_encVal > old_encVal)  //回転方向を判定
+    //       {
+    //         if(Button_select < 2){
+    //           Button_select++;  //next
+    //         }
+    //       }
+    //       else if(new_encVal < old_encVal)
+    //       {
+    //         if(Button_select  > 0){
+    //           Button_select--;  //next
+    //         }
+    //       }
+    //     }
+    //     else if(A_OLED == 20)  //ラインの閾値を変更する
+    //     {
+    //       if(new_encVal > old_encVal)  //回転方向を判定
+    //       {
+    //         if(line.LINE_Level < 1023)
+    //         {
+    //           line.LINE_Level++;
+    //         }
+    //       }
+    //       else if(new_encVal < old_encVal)
+    //       {
+    //         if(line.LINE_Level > 0)
+    //         {
+    //           line.LINE_Level--;
+    //         }
+    //       }
+    //     }
+    //     else if(A_OLED == 40)  //ボールの閾値を変更する
+    //     {
+    //       if(new_encVal > old_encVal)  //回転方向を判定
+    //       {
+    //         if(RA_size < 1023)
+    //         {
+    //           RA_size++;
+    //         }
+    //       }
+    //       else if(new_encVal < old_encVal)
+    //       {
+    //         if(RA_size > 0)
+    //         {
+    //           RA_size--;
+    //         }
+    //       }
+    //     }
+    //     else if(A_OLED == 60)  //モーターの出力を変更する
+    //     {
+    //       if(new_encVal > old_encVal)  //回転方向を判定
+    //       {
+    //         if(val_max < 1023)
+    //         {
+    //           val_max++;
+    //         }
+    //       }
+    //       else if(new_encVal < old_encVal)
+    //       {
+    //         if(val_max > 0)
+    //         {
+    //           val_max--;
+    //         }
+    //       }
+    //     }
+    //     old_encVal = new_encVal;
+    //   }
+    // }
+    Serial.print("end!!!!!!!!");
   }
 }

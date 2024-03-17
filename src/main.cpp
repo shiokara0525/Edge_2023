@@ -15,6 +15,7 @@ Cam cam(4);
 oled_attack OLED;
 
 void setup(){
+  Serial.begin(9600);
   OLED.setup();
   OLED.OLED();
 }

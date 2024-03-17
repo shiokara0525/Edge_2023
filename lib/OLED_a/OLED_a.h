@@ -33,8 +33,8 @@ class oled_attack{
     public:
     Adafruit_SSD1306 display = Adafruit_SSD1306(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
     const int bluetooth = 11;
-    const int Encoder_A = 38;  //エンコーダーのピン番号
-    const int Encoder_B = 37;  //エンコーダーのピン番号
+    const int Encoder_A = 16;  //エンコーダーのピン番号
+    const int Encoder_B = 17;  //エンコーダーのピン番号
     Encoder myEnc = Encoder(Encoder_A, Encoder_B);  //エンコーダのピン番号
     timer timer_OLED;
     long oldPosition  = -999;  //エンコーダのオールドポジの初期化
