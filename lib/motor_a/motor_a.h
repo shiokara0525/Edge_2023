@@ -3,7 +3,7 @@
 #include<angle.h>
 #include<MA.h>
 #include<line.h>
-#define motor_max 3     //移動平均で使う配列の大きさ
+#define motor_max 10     //移動平均で使う配列の大きさ
 
 class motor_attack{
     public:
