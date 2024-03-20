@@ -37,8 +37,9 @@ Cam cam_front(4);
 Cam cam_back(3);
 //======================================================スタートスイッチ======================================================//
 int LED = 13;
-int toogle_f;
-int toogle_P = 27;
+int toggle_f;
+int toggle_P = 27;
+int toggle;
 void Switch();
 //======================================================関数たち======================================================/
 
@@ -73,20 +74,12 @@ void setup() {
 }
 
 void loop() {
-  line.getLINE_Vec();
-  ball.getBallposition();
-  ac.getAC_val();
-
   int kick_ = 0;
-
-  // dribbler.run();
-  if(5000 < kick_t.read_ms()){
+  if(digitalRead(toggle_P) != toggle_f){
+    toggle_f = digitalRead(toggle_P);
     kick_ = 1;
-    kick_t.reset();
   }
   kick.run(kick_);
-  Serial.print(" timer : ");
-  Serial.print(kick_t.read_ms());
 
   if(print_flag == 1){
     // ball.print();
@@ -102,7 +95,7 @@ void loop() {
     Serial.println();
   }
 
-  if(toogle_f != digitalRead(toogle_P)){
+  if(toggle_f != digitalRead(toggle_P)){
     kick_t.reset();
     pixels.clear();
     kick.stop();
@@ -116,16 +109,16 @@ void loop() {
 
 void Switch(){
   digitalWrite(LED,HIGH);
-  toogle_f = digitalRead(toogle_P);
+  toggle_f = digitalRead(toggle_P);
   delay(100);
-  while(digitalRead(toogle_P) == toogle_f);
+  while(digitalRead(toggle_P) == toggle_f);
   digitalWrite(LED,LOW);
   ac.setup_2();
   // Target_dir = ac.dir_n;
-  toogle_f = digitalRead(toogle_P);
+  toggle_f = digitalRead(toggle_P);
   delay(100);
-  while(digitalRead(toogle_P) == toogle_f);
-  toogle_f = digitalRead(toogle_P);  //トグルがもげちゃったからいったんLチカでスタート
+  while(digitalRead(toggle_P) == toggle_f);
+  toggle_f = digitalRead(toggle_P);  //トグルがもげちゃったからいったんLチカでスタート
 }
 
 
