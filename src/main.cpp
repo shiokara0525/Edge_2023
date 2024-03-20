@@ -49,11 +49,11 @@ void setup() {
   ac.setup();
   cam_front.begin();
   cam_back.begin();
-  dribbler.setup();
+  // dribbler.setup();
   kick_t.reset();
-  while(kick_t.read_ms() < 500){
-    dribbler.run();
-  }
+  // while(kick_t.read_ms() < 500){
+  //   dribbler.run();
+  // }
   pixels.begin();
   pixels.clear();
   kick.setup();
@@ -67,7 +67,7 @@ void setup() {
     cam_front.color = 1;  //青が0 黄色が1
     cam_back.color = 0;  //青が0 黄色が1
   }
-  dribbler.stop();
+  // dribbler.stop();
   Switch();
   // dribbler.run();
 }
@@ -79,8 +79,8 @@ void loop() {
 
   int kick_ = 0;
 
-  dribbler.run();
-  if(1000 < kick_t.read_ms()){
+  // dribbler.run();
+  if(5000 < kick_t.read_ms()){
     kick_ = 1;
     kick_t.reset();
   }
@@ -105,6 +105,7 @@ void loop() {
   if(toogle_f != digitalRead(toogle_P)){
     kick_t.reset();
     pixels.clear();
+    kick.stop();
     MOTOR.motor_0();
     dribbler.stop();
     Switch();
