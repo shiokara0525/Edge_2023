@@ -72,11 +72,14 @@ void setup() {
   Switch();
   // dribbler.run();
 }
+int Toggle;
 
 void loop() {
   int kick_ = 0;
-  if(digitalRead(toggle_P) != toggle_f){
-    toggle_f = digitalRead(toggle_P);
+  delay(5);
+  Toggle = digitalRead(toggle_P);
+  if(Toggle != toggle_f){
+    toggle_f = Toggle;
     kick_ = 1;
   }
   kick.run(kick_);
@@ -95,14 +98,14 @@ void loop() {
     Serial.println();
   }
 
-  if(toggle_f != digitalRead(toggle_P)){
-    kick_t.reset();
-    pixels.clear();
-    kick.stop();
-    MOTOR.motor_0();
-    dribbler.stop();
-    Switch();
-  }
+  // if(toggle_f != digitalRead(toggle_P)){
+  //   kick_t.reset();
+  //   pixels.clear();
+  //   kick.stop();
+  //   MOTOR.motor_0();
+  //   dribbler.stop();
+  //   Switch();
+  // }
 }
 
 
